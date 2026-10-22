@@ -6,11 +6,11 @@ zusätzlich die RUF-Skills unter `../RUF/.claude/skills/` und `../RUF/AGENTS.md`
 
 ## Aufbau
 
-- `src/manifest.rs`, `features.rs`, `crates_io.rs`, `cargo_cli.rs`, `i18n.rs`, `cli.rs` – **Qt-frei**,
+- `src/manifest.rs`, `features.rs`, `crates_io.rs`, `cargo_cli.rs`, `i18n.rs`, `cli.rs` – **ohne Oberfläche**,
   mit Unit-Tests. Logik gehört hierher, nicht in `ui/`.
 - `src/ui/mod.rs` – `Editor`, `Shared` (gemeinsamer Zustand), Speichern/Laden/Prüfen.
 - `src/ui/*_tab.rs` – je Tab: `build()` (Widgets), `layout(w, h)`, `refresh(&State)`, `connect()`.
-- `locales/{de,en}.toml` – alle sichtbaren Texte. `tests/gui.rs` – GUI-Tests (offscreen).
+- `locales/{de,en}.toml` – alle sichtbaren Texte. `tests/gui.rs` – GUI-Tests (Linux ohne Bildschirm: `xvfb-run -a`; Windows-Build unter Wine).
 
 ## Befehle
 

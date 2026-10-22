@@ -8,7 +8,7 @@
 //! cargo run --example remote_control -- /tmp/demo serde derive /tmp/ct.png en
 //! ```
 //!
-//! Ohne Bildschirm: `QT_QPA_PLATFORM=offscreen` voranstellen.
+//! Linux ohne Bildschirm: `xvfb-run` voranstellen.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};

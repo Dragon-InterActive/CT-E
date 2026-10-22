@@ -9,7 +9,7 @@ Optisch soll der Editor 2 Tabs haben. Tab#1 ist der Quell-Code der cargo.toml un
 
 Wichtig ist, dass der Editor i18n (Multi-Language) ist. Die aktuelle Sprache und der Pfad wird beim Aufruf übergeben, da der Editor später als Teil des gesamten Freya-TD sein wird und entsprechend von der Oberfläche aus aufgerufen wird.
 
-RUF(Rust native UI Framework) wurde in Rust erstellt und arbeitet mit der Qt6 Libraray. Im Unterverzeichnis ../RUF findes du alles weitere und unter ../RUF/.claude/skills findest du auch alle benötigten Skills um RUF für den Editor zu benutzen.
+RUF(Rust native UI Framework) wurde in Rust erstellt und arbeitet ohne Qt6 Libraray. Im Unterverzeichnis ../RUF findes du alles weitere und unter ../RUF/.claude/skills findest du auch alle benötigten Skills um RUF für den Editor zu benutzen.
 Weitere Crates, welche dir als sinnvoll erscheinen, sollen installiert und benutzt werden. Die Entscheidung liegt vollständig bei dir.
 
 ### Version und Github

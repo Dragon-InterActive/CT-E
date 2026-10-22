@@ -20,16 +20,8 @@ fn main() -> ExitCode {
     }
     i18n::set_language(&cli.language());
 
-    // Qt bekommt nur den Programmnamen – unsere Optionen sind nicht seine.
-    // Für Screenshots ohne Bildschirm die Offscreen-Plattform erzwingen.
-    let program = std::env::args()
-        .next()
-        .unwrap_or_else(|| "ct-editor".into());
-    let app = if cli.screenshot.is_some() {
-        Application::with_args([program.as_str(), "-platform", "offscreen"])
-    } else {
-        Application::with_args([program])
-    };
+    // Screenshots ohne Bildschirm: unter Linux mit `xvfb-run` starten.
+    let app = Application::new();
     app.set_name("CT-Editor");
 
     let source: Arc<dyn CrateSource> = if cli.offline {

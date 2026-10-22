@@ -326,9 +326,20 @@ impl Shared {
     }
 
     fn layout(&self, width: i32, height: i32) {
-        let button_w = 130;
+        let buttons = [&self.save_button, &self.reload_button, &self.check_button];
+        // Gleich breite Knöpfe, mindestens so breit wie der längste Text in
+        // der Schrift des jeweiligen Systems.
+        let button_w = buttons
+            .iter()
+            .map(|b| {
+                b.widget().adjust_size();
+                b.size().width + 16
+            })
+            .max()
+            .unwrap_or(0)
+            .max(130);
         let mut x = width - MARGIN - button_w;
-        for button in [&self.save_button, &self.reload_button, &self.check_button] {
+        for button in buttons {
             button.set_geometry(x, MARGIN, button_w, ROW);
             x -= button_w + GAP;
         }

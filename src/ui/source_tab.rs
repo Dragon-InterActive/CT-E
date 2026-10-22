@@ -17,11 +17,17 @@ use crate::tr;
 pub const DEBOUNCE_MS: i32 = 300;
 
 /// Hervorhebungsregeln für TOML: (Muster, Farbe, fett). Spätere Regeln
-/// überschreiben frühere – Kommentare stehen deshalb am Ende.
+/// überschreiben frühere – Kommentare stehen deshalb am Ende. Hat ein Muster
+/// eine Gruppe 1, wird nur sie eingefärbt (Syntax der `regex`-Crate, ohne
+/// Lookarounds).
 pub const TOML_RULES: &[(&str, &str, bool)] = &[
-    (r"^\s*[A-Za-z0-9_\-\.'\x22]+(?=\s*=)", "#2874a6", false),
+    (r"^\s*([A-Za-z0-9_\-\.'\x22]+)\s*=", "#2874a6", false),
     (r"\b(true|false)\b", "#ca6f1e", false),
-    (r"(?<![\w\.\-])[+-]?\d[\d_]*(\.\d+)?\b", "#ca6f1e", false),
+    (
+        r"(?:^|[^\w.\-])([+-]?\d[\d_]*(?:\.\d+)?)\b",
+        "#ca6f1e",
+        false,
+    ),
     (r#""(?:[^"\\]|\\.)*""#, "#239b56", false),
     (r"'[^']*'", "#239b56", false),
     (r"^\s*\[\[?[^\]]*\]\]?", "#8e44ad", true),

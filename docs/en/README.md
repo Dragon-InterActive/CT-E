@@ -164,13 +164,13 @@ language permanently, put the file into `locales/` and register it in `src/i18n.
 
 ### Requirements
 
-Rust ≥ 1.99, Qt ≥ 6 with development files (`qmake6` on `PATH`), a C++17 compiler –
+Rust ≥ 1.99 and, on Linux, GTK 4 with development files (Windows and macOS need nothing else) –
 the same as for RUF (`../RUF/docs/en/getting-started.md`).
 
 ```bash
 cd CT-Editor
 cargo run -- --lang en --path ../RUF                 # start the editor
-cargo test                                           # logic and GUI tests (offscreen)
+cargo test                                           # logic and GUI tests (Linux without a display: xvfb-run -a cargo test)
 cargo test -- --ignored live_crates_io               # test against the real crates.io
 cargo clippy --all-targets                           # must be warning-free
 ```
@@ -184,15 +184,15 @@ CT-Editor/
 │   ├── lib.rs           library (everything except main.rs is reusable)
 │   ├── cli.rs           command line (clap)
 │   ├── i18n.rs          translations, tr! macro
-│   ├── manifest.rs      Cargo.toml model on toml_edit (Qt-free)
-│   ├── features.rs      feature check boxes ⇄ features/default-features (Qt-free)
-│   ├── crates_io.rs     crates.io client + CrateSource trait (Qt-free)
-│   ├── cargo_cli.rs     validation via cargo metadata (Qt-free)
+│   ├── manifest.rs      Cargo.toml model on toml_edit (no UI)
+│   ├── features.rs      feature check boxes ⇄ features/default-features (no UI)
+│   ├── crates_io.rs     crates.io client + CrateSource trait (no UI)
+│   ├── cargo_cli.rs     validation via cargo metadata (no UI)
 │   └── ui/              user interface (RUF/RNCL)
 │       ├── mod.rs       editor, shared state, save/load/check
 │       ├── source_tab.rs, deps_tab.rs, package_tab.rs, features_tab.rs, advanced_tab.rs
 ├── locales/             de.toml, en.toml
-├── tests/gui.rs         GUI integration tests (real Qt, offscreen)
+├── tests/gui.rs         GUI integration tests (real toolkit)
 ├── examples/remote_control.rs   drive the editor from code
 └── docs/                this documentation (de, en, images)
 ```
@@ -218,7 +218,7 @@ Validity for Cargo is then checked by **Cargo itself** (`cargo metadata`, button
 
 ### Using the logic as a library
 
-Everything except the UI runs without Qt – e.g. directly inside Freya TD:
+Everything except the UI runs without a GUI toolkit – e.g. directly inside Freya TD:
 
 ```rust
 use ct_editor::manifest::{DepKind, DepTable, Dependency, Manifest};
@@ -273,7 +273,7 @@ editor.save()?;
 | Level | Location | Run |
 |---|---|---|
 | manifest, features, i18n, CLI, cargo | `src/*.rs` (`#[cfg(test)]`) | `cargo test --lib` |
-| user interface | `tests/gui.rs` (own `main`, `harness = false`) | `cargo test --test gui` (offscreen) |
+| user interface | `tests/gui.rs` (own `main`, `harness = false`) | `cargo test --test gui` (Linux without a display: `xvfb-run -a`) |
 | crates.io live | `crates_io::tests::live_crates_io` | `cargo test -- --ignored` |
 
 The i18n test `every_used_key_exists` finds every `tr!("…")` key in the sources that
@@ -285,6 +285,6 @@ is missing from the language files.
 - The skill `.claude/skills/ct-editor/SKILL.md` describes typical tasks (new tab, new
   package field, new language, debugging).
 - **Visual check without a screen:** `ct-editor --offline --tab package --screenshot /tmp/p.png`
-  or `QT_QPA_PLATFORM=offscreen cargo run --example remote_control -- demo serde derive /tmp/d.png en`
+  or `xvfb-run -a cargo run --example remote_control -- demo serde derive /tmp/d.png en`
   – then look at the image.
 - The RUF skills (`../RUF/.claude/skills`) apply here as well.

@@ -62,7 +62,7 @@ Vorbild `deps_tab.rs` (`start_search` / `on_search_reply`): Generationszähler e
 ```bash
 cargo clippy --all-targets && cargo test
 ./target/debug/ct-editor --offline --lang de --path /tmp/demo --tab <tab> --screenshot /tmp/ct.png
-QT_QPA_PLATFORM=offscreen cargo run --example remote_control -- /tmp/demo serde derive /tmp/d.png
+xvfb-run -a cargo run --example remote_control -- /tmp/demo serde derive /tmp/d.png
 ```
 
 Bild ansehen: Überlappungen, abgeschnittene Texte, leere Bereiche. Bei Layoutproblemen

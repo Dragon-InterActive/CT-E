@@ -2,7 +2,7 @@
 //!
 //! Visueller Editor für `Cargo.toml`, gebaut mit [RUF/RNCL](rncl).
 //!
-//! | Modul | Aufgabe | Qt nötig |
+//! | Modul | Aufgabe | Oberfläche nötig |
 //! |---|---|---|
 //! | [`manifest`] | `Cargo.toml` lesen, ändern, schreiben (formatierungserhaltend) | nein |
 //! | [`features`] | Feature-Auswahl ⇄ `features` / `default-features` | nein |

@@ -5,7 +5,7 @@
 //! und die Reihenfolge der Einträge bleiben deshalb erhalten; geändert wird
 //! nur, was der Anwender tatsächlich ändert.
 //!
-//! Dieses Modul kennt keine Oberfläche und ist vollständig ohne Qt testbar.
+//! Dieses Modul kennt keine Oberfläche und ist vollständig ohne Oberfläche testbar.
 
 use std::fmt;
 use std::str::FromStr;

@@ -1,8 +1,9 @@
 //! Integrationstests: der Editor wird wie von einem Anwender bedient –
-//! gegen echtes Qt (offscreen) und eine feste Crate-Quelle statt crates.io.
+//! gegen das echte native Toolkit und eine feste Crate-Quelle statt crates.io.
 //!
-//! Qt erlaubt nur eine QApplication pro Prozess, im Hauptthread – daher
-//! `harness = false` und ein eigenes `main()`.
+//! Native Toolkits erlauben nur eine Anwendung pro Prozess, im Hauptthread –
+//! daher `harness = false` und ein eigenes `main()`. Linux ohne Bildschirm:
+//! `xvfb-run cargo test`.
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -16,7 +17,7 @@ use ct_editor::ui::{Editor, EditorOptions};
 use rncl::prelude::*;
 
 fn main() {
-    let app = Application::with_args(["ct-editor-test", "-platform", "offscreen"]);
+    let app = Application::new();
     i18n::set_language("de");
 
     let tests: &[(&str, fn())] = &[
