@@ -635,6 +635,9 @@ impl Shared {
                         &warnings.join("\n"),
                     );
                 }
+                CheckResult::NoTargets => {
+                    s.set_status(StatusKind::Info, &tr!("status.cargo_no_targets"));
+                }
                 CheckResult::Invalid(message) => {
                     s.set_status(StatusKind::Error, &tr!("status.cargo_invalid"));
                     dialog::error(

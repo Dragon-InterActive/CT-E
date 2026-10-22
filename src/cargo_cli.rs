@@ -13,6 +13,10 @@ use std::process::Command;
 pub enum CheckResult {
     /// Gültig; enthält ggf. Warnungen von Cargo.
     Valid { warnings: Vec<String> },
+    /// Manifest in Ordnung, aber das Projekt hat noch keinen Quellcode
+    /// (`src/main.rs`, `src/lib.rs`, `[lib]` oder `[[bin]]` fehlen). Kein Fehler
+    /// der `Cargo.toml` – typisch für ein gerade angelegtes Projekt.
+    NoTargets,
     /// Cargo lehnt das Manifest ab; enthält die Fehlermeldung.
     Invalid(String),
     /// Cargo konnte nicht gestartet werden.
@@ -50,6 +54,8 @@ pub fn check_manifest(manifest_path: &Path) -> CheckResult {
             .map(|l| l.trim_start_matches("warning:").trim().to_owned())
             .collect();
         CheckResult::Valid { warnings }
+    } else if stderr.contains("no targets specified in the manifest") {
+        CheckResult::NoTargets
     } else {
         CheckResult::Invalid(stderr.trim().to_owned())
     }
@@ -87,7 +93,16 @@ mod tests {
             CheckResult::Invalid(message) => assert!(message.contains("edition"), "{message}"),
             other => panic!("{other:?}"),
         }
+
+        let empty = temp_project("empty", "[package]\nname = \"x\"\nversion = \"0.1.0\"\n");
+        std::fs::remove_dir_all(empty.join("src")).unwrap();
+        assert_eq!(
+            check_manifest(&empty.join("Cargo.toml")),
+            CheckResult::NoTargets
+        );
+
         std::fs::remove_dir_all(ok).ok();
+        std::fs::remove_dir_all(empty).ok();
         std::fs::remove_dir_all(bad).ok();
     }
 }

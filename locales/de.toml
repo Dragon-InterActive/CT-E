@@ -30,6 +30,7 @@ valid = "Syntax in Ordnung."
 checking = "Cargo prüft das Manifest …"
 cargo_ok = "Cargo: Manifest ist gültig."
 cargo_warnings = "Cargo: gültig, aber {count} Warnung(en)."
+cargo_no_targets = "Cargo: Manifest in Ordnung – das Projekt hat aber noch keinen Quellcode (src/main.rs oder src/lib.rs fehlt)."
 cargo_invalid = "Cargo lehnt das Manifest ab."
 cargo_missing = "Cargo konnte nicht gestartet werden: {error}"
 
