@@ -24,4 +24,4 @@ Bei der Entwicklung berücksichtige die Nutzung von KI.
 
 ## Lizenz
 
-Das gesamte Projekt unterliegt der Apache 2.0 Lizenz.
+Das gesamte Projekt steht unter der Doppellizenz MIT OR Apache-2.0 (nach Wahl des Nutzers).
