@@ -10,7 +10,7 @@ zusätzlich die RUF-Skills unter `../RUF/.claude/skills/` und `../RUF/AGENTS.md`
   mit Unit-Tests. Logik gehört hierher, nicht in `ui/`.
 - `src/ui/mod.rs` – `Editor`, `Shared` (gemeinsamer Zustand), Speichern/Laden/Prüfen.
 - `src/ui/*_tab.rs` – je Tab: `build()` (Widgets), `layout(w, h)`, `refresh(&State)`, `connect()`.
-- `locales/{de,en}.toml` – alle sichtbaren Texte. `tests/gui.rs` – GUI-Tests (Linux ohne Bildschirm: `xvfb-run -a`; Windows-Build unter Wine).
+- `locales/{de,en}.toml` – alle sichtbaren Texte. `tests/gui.rs` – GUI-Tests (Linux ohne Bildschirm: `xvfb-run -a`). Release für Windows/macOS: `../RUF/tools/bundle-*.sh` (`../RUF/docs/de/release.md`).
 
 ## Befehle
 

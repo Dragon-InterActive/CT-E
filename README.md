@@ -1,9 +1,9 @@
 # CT-Editor – Cargo TOML Editor
 
 Visueller Editor für `Cargo.toml`-Dateien – Teil des RAD-Tools **Freya TD**, gebaut
-mit [RUF/RNCL](../RUF) – nativ auf Linux (GTK 4), Windows (Win32) und macOS (Cocoa).
+mit [RUF/RNCL](../RUF) – GTK 4 auf Linux, Windows und macOS.
 *Visual editor for `Cargo.toml` files – part of the RAD tool **Freya TD**, built with
-[RUF/RNCL](../RUF) – native on Linux (GTK 4), Windows (Win32) and macOS (Cocoa).*
+[RUF/RNCL](../RUF) – GTK 4 on Linux, Windows and macOS.*
 
 ![CT-Editor](docs/images/dependencies-de.png)
 
