@@ -1,4 +1,4 @@
-//! # CT-Editor – Cargo-TOML-Editor für Freya TD
+//! # CT-Editor – Cargo-TOML-Editor für Freya TDE
 //!
 //! Visueller Editor für `Cargo.toml`, gebaut mit [RUF/RNCL](rncl).
 //!
@@ -9,10 +9,10 @@
 //! | [`crates_io`] | Suche und Crate-Details von crates.io | nein |
 //! | [`cargo_cli`] | Prüfung des Manifests durch `cargo metadata` | nein |
 //! | [`i18n`] | Übersetzungen (`tr!`) | nein |
-//! | [`cli`] | Kommandozeile (Aufruf durch Freya TD) | nein |
+//! | [`cli`] | Kommandozeile (Aufruf durch Freya TDE) | nein |
 //! | [`ui`] | die Oberfläche | ja |
 //!
-//! Die Logik-Module sind ohne Oberfläche nutzbar – etwa um aus Freya TD
+//! Die Logik-Module sind ohne Oberfläche nutzbar – etwa um aus Freya TDE
 //! heraus direkt eine Abhängigkeit einzutragen:
 //!
 //! ```

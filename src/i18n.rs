@@ -1,7 +1,7 @@
 //! Mehrsprachigkeit (i18n).
 //!
 //! Übersetzungen liegen als TOML-Dateien unter `locales/<sprache>.toml` und
-//! werden in das Programm eingebettet. Freya TD kann zusätzlich einen Ordner
+//! werden in das Programm eingebettet. Freya TDE kann zusätzlich einen Ordner
 //! mit weiteren `*.toml`-Dateien übergeben (`--locales`), um Sprachen ohne
 //! Neukompilieren nachzurüsten oder Texte zu überschreiben.
 //!

@@ -1,4 +1,4 @@
-//! Den Editor per Code fernsteuern – z. B. für Freya TD oder KI-Agenten.
+//! Den Editor per Code fernsteuern – z. B. für Freya TDE oder KI-Agenten.
 //!
 //! Sucht ein Crate auf crates.io, wählt den ersten Treffer, hakt ein
 //! Feature an, trägt die Abhängigkeit ein und speichert ein Bildschirmfoto:

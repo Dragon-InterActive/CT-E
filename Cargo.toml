@@ -1,6 +1,6 @@
 [package]
 name = "ct-editor"
-description = "CT-Editor – visueller Editor für Cargo.toml-Dateien, Teil des RAD-Tools Freya TD"
+description = "CT-Editor – visueller Editor für Cargo.toml-Dateien, Teil des RAD-Tools Freya TDE"
 version = "0.2.0"
 edition = "2024"
 rust-version = "1.99"

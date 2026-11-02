@@ -1,6 +1,6 @@
 ---
 name: ct-editor
-description: Den CT-Editor (Cargo-TOML-Editor von Freya TD) erweitern oder Fehler darin suchen – neue Tabs, Paketfelder, Manifest-Funktionen, Übersetzungen, crates.io-Anbindung, GUI-Tests und Screenshots. Verwenden bei Arbeiten im Ordner CT-Editor oder wenn Freya TD Cargo.toml-Dateien bearbeiten soll.
+description: Den CT-Editor (Cargo-TOML-Editor von Freya TDE) erweitern oder Fehler darin suchen – neue Tabs, Paketfelder, Manifest-Funktionen, Übersetzungen, crates.io-Anbindung, GUI-Tests und Screenshots. Verwenden bei Arbeiten im Ordner CT-Editor oder wenn Freya TDE Cargo.toml-Dateien bearbeiten soll.
 ---
 
 # CT-Editor erweitern

@@ -1,4 +1,4 @@
-//! Kommandozeile – so ruft Freya TD den Editor auf.
+//! Kommandozeile – so ruft Freya TDE den Editor auf.
 //!
 //! ```text
 //! ct-editor --lang de --path /pfad/zum/projekt
@@ -33,7 +33,7 @@ impl Tab {
     }
 }
 
-/// CT-Editor – visueller Editor für Cargo.toml (Freya TD).
+/// CT-Editor – visueller Editor für Cargo.toml (Freya TDE).
 #[derive(Debug, Clone, Parser)]
 #[command(name = "ct-editor", version, about)]
 pub struct Cli {

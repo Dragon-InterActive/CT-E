@@ -12,7 +12,7 @@ use std::time::Duration;
 
 use serde::Deserialize;
 
-/// Erst ab so vielen Zeichen wird gesucht (Vorgabe Freya TD, schont die API).
+/// Erst ab so vielen Zeichen wird gesucht (Vorgabe Freya TDE, schont die API).
 pub const MIN_QUERY_LEN: usize = 3;
 
 /// Darf mit diesem Text gesucht werden?
@@ -164,7 +164,7 @@ impl CratesIo {
     pub const USER_AGENT: &'static str = concat!(
         "ct-editor/",
         env!("CARGO_PKG_VERSION"),
-        " (Freya TD; https://github.com/Dragon-InterActive/Freya-TD)"
+        " (Freya TDE; https://github.com/Dragon-InterActive/Freya-TD)"
     );
 
     pub fn new() -> Self {

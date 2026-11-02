@@ -1,7 +1,7 @@
 # CT-Editor – Handbuch
 
 Der **CT-Editor** (Cargo-TOML-Editor) ist der visuelle Editor für `Cargo.toml`-Dateien
-im RAD-Tool **Freya TD**. Er läuft als eigenständiges Programm, das Freya TD mit
+im RAD-Tool **Freya TDE**. Er läuft als eigenständiges Programm, das Freya TDE mit
 Sprache und Projektordner aufruft.
 
 🇬🇧 [English version](../en/README.md)
@@ -21,7 +21,7 @@ Sprache und Projektordner aufruft.
 ## Aufruf
 
 ```bash
-ct-editor --lang de --path /pfad/zum/projekt     # so ruft Freya TD den Editor auf
+ct-editor --lang de --path /pfad/zum/projekt     # so ruft Freya TDE den Editor auf
 ct-editor -l en ./mein-projekt                   # Pfad auch als Positionsangabe
 ct-editor --help                                 # alle Optionen
 ```
@@ -221,7 +221,7 @@ ungespeichert), sofort und ohne Netzwerk. Die Gültigkeit für Cargo prüft dana
 
 ### Die Logik als Bibliothek nutzen
 
-Alles außer der Oberfläche läuft ohne GUI-Toolkit – z. B. direkt in Freya TD:
+Alles außer der Oberfläche läuft ohne GUI-Toolkit – z. B. direkt in Freya TDE:
 
 ```rust
 use ct_editor::manifest::{DepKind, DepTable, Dependency, Manifest};
@@ -257,7 +257,7 @@ implementieren oder `StaticSource` verwenden und in `EditorOptions::source` übe
 
 ### Den Editor fernsteuern
 
-Alle Widgets sind über `editor.shared()` erreichbar – für Tests, Freya TD und
+Alle Widgets sind über `editor.shared()` erreichbar – für Tests, Freya TDE und
 KI-Agenten. Vollständiges Beispiel: `examples/remote_control.rs`.
 
 ```rust
