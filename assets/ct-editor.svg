@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CT-Editor program icon (same family as Freya TDE: white tile, dark red ink):
+     a Cargo.toml page with a [table] header and lines, a crate in front.
+     PNGs: for s in 16 24 32 48 64 128 256; do
+             rsvg-convert -w $s -h $s ct-editor.svg -o icons/ct-editor-$s.png; done -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect x="4" y="4" width="248" height="248" rx="44" ry="44" fill="#ffffff" stroke="#d8d8d8" stroke-width="2"/>
+  <!-- Seite mit Eselsohr -->
+  <path d="M 52 30 H 150 L 192 72 V 214 H 52 Z" fill="#ffffff" stroke="#8b1a1a" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M 150 30 V 72 H 192" fill="none" stroke="#8b1a1a" stroke-width="10" stroke-linejoin="round"/>
+  <!-- [table] -->
+  <path d="M 84 70 H 74 V 102 H 84" fill="none" stroke="#8b1a1a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 120 70 H 130 V 102 H 120" fill="none" stroke="#8b1a1a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- key = value -->
+  <path d="M 74 128 H 108 M 120 128 H 160 M 74 154 H 100 M 112 154 H 140" fill="none" stroke="#6a6a6a" stroke-width="9" stroke-linecap="round"/>
+  <!-- Crate -->
+  <g transform="translate(132 132)">
+    <path d="M 46 4 L 88 24 L 46 44 L 4 24 Z" fill="#b8312f" stroke="#8b1a1a" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M 4 24 V 70 L 46 92 V 44 Z" fill="#8b1a1a" stroke="#8b1a1a" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M 88 24 V 70 L 46 92 V 44 Z" fill="#a02523" stroke="#8b1a1a" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M 25 14 L 67 34 V 52" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

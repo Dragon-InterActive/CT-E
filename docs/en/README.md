@@ -43,6 +43,10 @@ contains syntax errors (they are highlighted).
 
 Exit code: `0` on normal termination.
 
+On Linux with Wayland the editor starts through XWayland like Freya TDE
+(`GDK_BACKEND=x11` unless set otherwise): only then do the title bar and task bar show
+its program icon instead of the placeholder. `GDK_BACKEND=wayland` forces native Wayland.
+
 ## The tabs
 
 ### 1 · Source

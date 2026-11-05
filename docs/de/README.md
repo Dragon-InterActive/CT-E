@@ -43,6 +43,11 @@ automatisch geladen – auch wenn sie Syntaxfehler enthält (diese werden markie
 
 Exit-Code: `0` bei normalem Ende.
 
+Unter Linux mit Wayland startet der Editor wie Freya TDE über XWayland
+(`GDK_BACKEND=x11`, wenn nichts anderes gesetzt ist): nur so zeigen Titel- und
+Taskleiste sein Programmsymbol statt des Platzhalters. `GDK_BACKEND=wayland` erzwingt
+natives Wayland.
+
 ## Die Registerkarten
 
 ### 1 · Quelltext

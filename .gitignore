@@ -1,4 +1,6 @@
 /target
 *.png
 !docs/images/*.png
+# Programmsymbol (einkompiliert)
+!assets/icons/*.png
 /dist
