@@ -28,7 +28,7 @@ ct-editor --help                                 # alle Optionen
 
 | Option | Bedeutung |
 |---|---|
-| `PROJEKTORDNER` / `-p, --path` | Ordner mit der `Cargo.toml` (Standard: aktueller Ordner) |
+| `PROJEKTORDNER` / `-p, --path` | Ordner mit der `Cargo.toml` oder die `Cargo.toml` selbst (Standard: aktueller Ordner) |
 | `-l, --lang` | Sprache, z. B. `de`, `en`, `de_DE.UTF-8` (Standard: `LANG`, sonst Englisch) |
 | `--locales ORDNER` | zusätzliche Übersetzungsdateien laden |
 | `--tab` | Start-Registerkarte: `source`, `dependencies` (Standard), `package`, `features`, `advanced` |
@@ -300,6 +300,11 @@ ein GitHub-Release. Von Hand gestartet (Actions → Release → Run workflow) ba
 Pakete liegen dann als Artefakte am Lauf. Die Skripte für die GTK-Laufzeit kommen aus RUF,
 vom Stand im `Cargo.lock`. Unter macOS meldet Gatekeeper das unsignierte Programm beim
 ersten Start (Rechtsklick → Öffnen).
+
+Symbole: Quelle `assets/ct-editor.svg`, daraus erzeugt `python3 assets/make-icons.py` die
+PNGs (Linux, einkompiliert), `ct-editor.ico` (in die Windows-`.exe` eingebettet über
+`build.rs`) und `ct-editor.icns` (macOS-`.app`). Das Linux-Paket enthält dazu
+`ct-editor.desktop`.
 
 ### Tests
 

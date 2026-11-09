@@ -28,7 +28,7 @@ ct-editor --help                                # all options
 
 | Option | Meaning |
 |---|---|
-| `PROJECT_DIR` / `-p, --path` | folder containing `Cargo.toml` (default: current folder) |
+| `PROJECT_DIR` / `-p, --path` | folder containing `Cargo.toml`, or the `Cargo.toml` itself (default: current folder) |
 | `-l, --lang` | language, e.g. `de`, `en`, `de_DE.UTF-8` (default: `LANG`, else English) |
 | `--locales DIR` | load additional translation files |
 | `--tab` | start tab: `source`, `dependencies` (default), `package`, `features`, `advanced` |
@@ -296,6 +296,10 @@ everything to a GitHub release. Started by hand (Actions → Release → Run wor
 builds; the packages are then artifacts of the run. The GTK runtime scripts come from RUF,
 at the version in `Cargo.lock`. On macOS, Gatekeeper warns about the unsigned program on
 first start (right-click → Open).
+
+Icons: source `assets/ct-editor.svg`; `python3 assets/make-icons.py` builds the PNGs
+(Linux, compiled in), `ct-editor.ico` (embedded in the Windows `.exe` via `build.rs`) and
+`ct-editor.icns` (macOS `.app`). The Linux package also contains `ct-editor.desktop`.
 
 ### Tests
 

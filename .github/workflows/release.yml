@@ -44,6 +44,7 @@ jobs:
           cp target/release/ct-editor README.md LICENSE-MIT LICENSE-APACHE $dir/
           cp -r docs $dir/
           cp assets/icons/*.png assets/ct-editor.svg $dir/icons/
+          cp assets/ct-editor.desktop $dir/
           tar czf $dir.tar.gz $dir
           echo "PACKAGE=$dir.tar.gz" >> "$GITHUB_ENV"
       - uses: actions/upload-artifact@v7
@@ -124,7 +125,7 @@ jobs:
           dir=ct-editor-$version-macos-arm64
           mkdir -p $dir
           ruf/tools/bundle-macos.sh target/release/ct-editor $dir/CT-Editor.app \
-              net.dragon-software.ct-editor
+              net.dragon-software.ct-editor assets/ct-editor.icns
           cp -r docs README.md LICENSE-MIT LICENSE-APACHE $dir/
           ditto -c -k --keepParent $dir $dir.zip
           echo "PACKAGE=$dir.zip" >> "$GITHUB_ENV"

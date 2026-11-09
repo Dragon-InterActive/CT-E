@@ -37,7 +37,7 @@ impl Tab {
 #[derive(Debug, Clone, Parser)]
 #[command(name = "ct-editor", version, about)]
 pub struct Cli {
-    /// Projektordner (enthält die Cargo.toml oder bekommt eine neue).
+    /// Projektordner (enthält die Cargo.toml oder bekommt eine neue) oder die Cargo.toml selbst.
     #[arg(value_name = "PROJEKTORDNER", conflicts_with = "path")]
     pub project: Option<PathBuf>,
 
@@ -78,11 +78,23 @@ pub struct Cli {
 
 impl Cli {
     /// Der Projektordner: Angabe oder aktuelles Verzeichnis.
+    ///
+    /// Eine übergebene `Cargo.toml` (z. B. „Öffnen mit“ im Dateimanager) steht
+    /// für ihren Ordner.
     pub fn project_dir(&self) -> PathBuf {
-        self.project
+        let given = self
+            .project
             .clone()
             .or_else(|| self.path.clone())
-            .unwrap_or_else(|| PathBuf::from("."))
+            .unwrap_or_else(|| PathBuf::from("."));
+        if given.file_name().is_some_and(|n| n == "Cargo.toml") && !given.is_dir() {
+            given
+                .parent()
+                .filter(|p| !p.as_os_str().is_empty())
+                .map_or_else(|| PathBuf::from("."), PathBuf::from)
+        } else {
+            given
+        }
     }
 
     /// Die gewünschte Sprache: Angabe, sonst `LANG`, sonst Englisch.
@@ -117,6 +129,14 @@ fn parse_size(text: &str) -> Result<(i32, i32), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn manifest_file_stands_for_its_folder() {
+        let cli = Cli::parse_from(["ct-editor", "/tmp/p/Cargo.toml"]);
+        assert_eq!(cli.project_dir(), PathBuf::from("/tmp/p"));
+        let cli = Cli::parse_from(["ct-editor", "Cargo.toml"]);
+        assert_eq!(cli.project_dir(), PathBuf::from("."));
+    }
 
     #[test]
     fn freya_style_call() {
