@@ -29,6 +29,7 @@ pub mod deps_tab;
 pub mod features_tab;
 pub mod package_tab;
 pub mod source_tab;
+pub mod standalone;
 
 use std::cell::{Cell, RefCell};
 use std::path::{Path, PathBuf};
@@ -42,7 +43,7 @@ use crate::cargo_cli::{self, CheckResult};
 use crate::cli::Tab;
 use crate::crates_io::CrateSource;
 use crate::manifest::{Manifest, ParseError, sanitize_package_name};
-use crate::tr;
+use crate::{i18n, tr};
 
 use self::advanced_tab::AdvancedTab;
 use self::deps_tab::DepsTab;
@@ -92,6 +93,44 @@ pub struct EditorOptions {
     pub project_dir: PathBuf,
     pub source: Arc<dyn CrateSource>,
     pub size: (i32, i32),
+    /// Menü „Datei“ (Öffnen, Sprache, Beenden) für den eigenständigen
+    /// Betrieb; von Freya TDE gestartet ohne Menü.
+    pub menu: bool,
+}
+
+/// Was der Editor über das Menü „Datei“ von seinem Rahmen verlangt
+/// ([`Editor::on_request`], im eigenständigen Betrieb [`standalone::Standalone`]).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Request {
+    /// Die `Cargo.toml` in diesem Projektordner öffnen.
+    Open(PathBuf),
+    /// Die Oberfläche in dieser Sprache neu aufbauen.
+    Language(String),
+}
+
+/// Empfänger der Anforderungen aus dem Menü.
+type RequestHandler = Box<dyn Fn(Request)>;
+
+/// Menüleiste des eigenständigen Editors.
+fn menu_bar() -> MenuBar {
+    let current = i18n::language();
+    let mut languages = Menu::new();
+    for language in i18n::available() {
+        let name = i18n::name_of(&language);
+        languages = if language == current {
+            languages.disabled_item(&format!("lang.{language}"), &format!("{name} ✓"))
+        } else {
+            languages.item(&format!("lang.{language}"), &name, None)
+        };
+    }
+    vec![(
+        tr!("menu.file"),
+        Menu::new()
+            .item("file.open", &tr!("menu.open"), Some("Ctrl+O"))
+            .submenu(&tr!("menu.language"), languages)
+            .separator()
+            .item("file.quit", &tr!("menu.quit"), Some("Ctrl+Q")),
+    )]
 }
 
 /// Alles, was die Tabs gemeinsam brauchen. Wird als `Rc` geteilt; Closures
@@ -118,6 +157,8 @@ pub struct Shared {
     had_error: Cell<bool>,
     manifest_path: PathBuf,
     crate_source: Arc<dyn CrateSource>,
+    /// Empfänger der Anforderungen aus dem Menü (eigenständiger Betrieb).
+    requests: RefCell<Option<RequestHandler>>,
 }
 
 /// Der CT-Editor.
@@ -133,6 +174,7 @@ pub struct Shared {
 ///     project_dir: "mein-projekt".into(),
 ///     source: Arc::new(CratesIo::new()),
 ///     size: (1100, 720),
+///     menu: false,
 /// });
 /// editor.show();
 /// std::process::exit(app.exec());
@@ -152,7 +194,12 @@ impl Editor {
 
         let window = RnclWindow::new("CT-Editor");
         window.set_size(options.size.0, options.size.1);
+        if options.menu {
+            window.set_menu_bar(menu_bar());
+        }
         let path_label = RnclLabel::new(&window, "");
+        // Lange Pfade in der Mitte kürzen (Dateiname bleibt sichtbar), ganz im Tooltip.
+        path_label.set_elide(Elide::Middle);
         let check_button = RnclButton::new(&window, &tr!("app.check"));
         let reload_button = RnclButton::new(&window, &tr!("app.reload"));
         let save_button = RnclButton::new(&window, &tr!("app.save"));
@@ -193,6 +240,7 @@ impl Editor {
             had_error: Cell::new(false),
             manifest_path,
             crate_source: options.source,
+            requests: RefCell::new(None),
         });
 
         Shared::connect(&shared);
@@ -251,6 +299,22 @@ impl Editor {
 
     pub fn select_tab(&self, tab: Tab) {
         self.shared.tabs.set_current_index(tab.index());
+    }
+
+    /// Index der gezeigten Registerkarte.
+    pub fn current_tab(&self) -> i32 {
+        self.shared.tabs.current_index()
+    }
+
+    /// Zeigt die Registerkarte mit Index `index` (siehe [`Editor::current_tab`]).
+    pub fn set_current_tab(&self, index: i32) {
+        self.shared.tabs.set_current_index(index);
+    }
+
+    /// Wer „Öffnen“ und „Sprache“ aus dem Menü ausführt. Nachfragen zu
+    /// ungespeicherten Änderungen stellt der Editor vorher selbst.
+    pub fn on_request(&self, f: impl Fn(Request) + 'static) {
+        *self.shared.requests.borrow_mut() = Some(Box::new(f));
     }
 }
 
@@ -319,10 +383,59 @@ impl Shared {
                 )
         });
 
+        // Menü „Datei“ (nur eigenständig).
+        shared
+            .window
+            .on_menu(weak1(shared, |s, id: String| s.menu(&id)));
+
         // Beim Verlassen des Quelltexts sofort auswerten, nicht erst nach der Tipp-Pause.
         shared
             .tabs
             .on_current_index_changed(weak1(shared, |s, _| s.flush_source()));
+    }
+
+    /// Ein Eintrag des Menüs „Datei“ wurde gewählt.
+    fn menu(&self, id: &str) {
+        match id {
+            "file.open" => {
+                self.flush_source();
+                if self.is_dirty()
+                    && !dialog::confirm(
+                        Some(self.window.widget()),
+                        &tr!("dialog.unsaved_title"),
+                        &tr!("dialog.unsaved_open"),
+                    )
+                {
+                    return;
+                }
+                let filters = [dialog::FileFilter::new(
+                    &tr!("dialog.open_filter"),
+                    &["Cargo.toml"],
+                )];
+                if let Some(dir) = dialog::open_file(
+                    Some(self.window.widget()),
+                    &tr!("dialog.open_title"),
+                    &filters,
+                )
+                .and_then(|file| file.parent().map(Path::to_path_buf))
+                {
+                    self.request(Request::Open(dir));
+                }
+            }
+            "file.quit" => self.window.widget().close(),
+            other => {
+                if let Some(language) = other.strip_prefix("lang.") {
+                    self.flush_source();
+                    self.request(Request::Language(language.to_owned()));
+                }
+            }
+        }
+    }
+
+    fn request(&self, request: Request) {
+        if let Some(f) = self.requests.borrow().as_ref() {
+            f(request);
+        }
     }
 
     fn layout(&self, width: i32, height: i32) {
@@ -500,11 +613,13 @@ impl Shared {
         ));
         let state = self.state.borrow();
         let path = self.manifest_path.display().to_string();
-        self.path_label.set_text(&if state.saved_text.is_none() {
+        let text = if state.saved_text.is_none() {
             tr!("app.path_new", path = path)
         } else {
             tr!("app.path", path = path)
-        });
+        };
+        self.path_label.set_text(&text);
+        self.path_label.set_tool_tip(&text);
     }
 
     fn update_status(&self) {

@@ -6,6 +6,7 @@ use std::sync::Arc;
 use clap::Parser;
 use ct_editor::cli::Cli;
 use ct_editor::crates_io::{CrateSource, CratesIo, StaticSource};
+use ct_editor::ui::standalone::Standalone;
 use ct_editor::ui::{Editor, EditorOptions};
 use ct_editor::{i18n, tr};
 use rncl::prelude::*;
@@ -29,7 +30,11 @@ fn main() -> ExitCode {
     {
         eprintln!("ct-editor: {error}");
     }
-    i18n::set_language(&cli.language());
+    // Eigenständig: gespeicherte Sprachwahl (zwischen --lang und LANG).
+    let saved = (!cli.embedded)
+        .then(|| ct_editor::settings::Settings::load().language)
+        .flatten();
+    i18n::set_language(&cli.language_with(saved.as_deref()));
 
     // Screenshots ohne Bildschirm: unter Linux mit `xvfb-run` starten.
     let app = Application::new();
@@ -43,19 +48,41 @@ fn main() -> ExitCode {
     } else {
         Arc::new(CratesIo::new())
     };
-    let editor = Editor::open(EditorOptions {
-        project_dir: cli.project_dir(),
-        source,
-        size: cli.size,
+    // Von Freya TDE gestartet: ohne Menü; sonst eigenständig mit Menü „Datei“.
+    let embedded = cli.embedded.then(|| {
+        Editor::open(EditorOptions {
+            project_dir: cli.project_dir(),
+            source: Arc::clone(&source),
+            size: cli.size,
+            menu: false,
+        })
     });
-    editor.select_tab(cli.tab);
-    editor.show();
+    let standalone = (!cli.embedded).then(|| {
+        Standalone::start(
+            &cli.project_dir(),
+            Arc::clone(&source),
+            cli.size,
+            cli.screenshot.is_none(),
+        )
+    });
+    let window = match (&embedded, &standalone) {
+        (Some(editor), _) => {
+            editor.select_tab(cli.tab);
+            editor.show();
+            editor.window().widget().clone()
+        }
+        (None, Some(standalone)) => {
+            standalone.editor().select_tab(cli.tab);
+            standalone.editor().window().widget().clone()
+        }
+        (None, None) => unreachable!("eingebettet oder eigenständig"),
+    };
 
     if let Some(path) = &cli.screenshot {
         for _ in 0..5 {
             Application::process_events();
         }
-        return if editor.window().widget().save_screenshot(path) {
+        return if window.save_screenshot(path) {
             ExitCode::SUCCESS
         } else {
             eprintln!(
@@ -67,6 +94,7 @@ fn main() -> ExitCode {
     }
 
     let code = app.exec();
-    drop(editor);
+    drop(embedded);
+    drop(standalone);
     ExitCode::from(code.clamp(0, 255) as u8)
 }

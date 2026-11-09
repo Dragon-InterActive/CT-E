@@ -113,6 +113,19 @@ pub fn language() -> String {
         .clone()
 }
 
+/// Der Name der Sprache `language` in ihr selbst (`de` → „Deutsch“, Schlüssel
+/// `language.name` ihrer Datei); ohne Eintrag das Kürzel.
+pub fn name_of(language: &str) -> String {
+    catalog()
+        .read()
+        .expect("i18n-Katalog vergiftet")
+        .texts
+        .get(language)
+        .and_then(|t| t.get("language.name"))
+        .cloned()
+        .unwrap_or_else(|| language.to_owned())
+}
+
 /// Alle verfügbaren Sprachen (sortiert).
 pub fn available() -> Vec<String> {
     let catalog = catalog().read().expect("i18n-Katalog vergiftet");

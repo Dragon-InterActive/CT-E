@@ -46,6 +46,7 @@ fn main() {
         project_dir: project.into(),
         source: Arc::new(CratesIo::new()),
         size: (1100, 720),
+        menu: false,
     });
     editor.select_tab(Tab::Dependencies);
     editor.show();

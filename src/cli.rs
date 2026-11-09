@@ -62,6 +62,11 @@ pub struct Cli {
     #[arg(long)]
     pub offline: bool,
 
+    /// Von Freya TDE gestartet: ohne Menü „Datei“ (Freya TDE bestimmt Datei
+    /// und Sprache), die Sprachwahl wird nicht gespeichert.
+    #[arg(long)]
+    pub embedded: bool,
+
     /// Fenster als Bild speichern und beenden (Dokumentation, KI-Sichtprüfung).
     #[arg(long, value_name = "PNG")]
     pub screenshot: Option<PathBuf>,
@@ -82,8 +87,15 @@ impl Cli {
 
     /// Die gewünschte Sprache: Angabe, sonst `LANG`, sonst Englisch.
     pub fn language(&self) -> String {
+        self.language_with(None)
+    }
+
+    /// Wie [`Cli::language`], mit der gespeicherten Wahl (`saved`) zwischen
+    /// `--lang` und `LANG`: der eigenständige Editor merkt sich seine Sprache.
+    pub fn language_with(&self, saved: Option<&str>) -> String {
         self.lang
             .clone()
+            .or_else(|| saved.map(str::to_owned))
             .or_else(|| std::env::var("LANG").ok())
             .filter(|l| !l.is_empty() && l != "C" && l != "POSIX")
             .unwrap_or_else(|| crate::i18n::FALLBACK.to_owned())

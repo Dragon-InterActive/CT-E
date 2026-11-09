@@ -10,6 +10,7 @@
 //! | [`cargo_cli`] | Prüfung des Manifests durch `cargo metadata` | nein |
 //! | [`i18n`] | Übersetzungen (`tr!`) | nein |
 //! | [`cli`] | Kommandozeile (Aufruf durch Freya TDE) | nein |
+//! | [`settings`] | persönliche Einstellungen (Sprache) des eigenständigen Editors | nein |
 //! | [`ui`] | die Oberfläche | ja |
 //!
 //! Die Logik-Module sind ohne Oberfläche nutzbar – etwa um aus Freya TDE
@@ -31,4 +32,5 @@ pub mod crates_io;
 pub mod features;
 pub mod i18n;
 pub mod manifest;
+pub mod settings;
 pub mod ui;

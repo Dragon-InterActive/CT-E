@@ -2,6 +2,10 @@
 # New language: copy this file (e.g. fr.toml), translate the values, keep the
 # keys unchanged. Keep placeholders in {curly braces}.
 
+[language]
+# Name dieser Sprache in ihr selbst (Menü „Sprache“) / name of this language in itself
+name = "English"
+
 [app]
 save = "Save"
 save_tip = "Save Cargo.toml (Ctrl+S)"
@@ -12,6 +16,12 @@ check_tip = "Let “cargo metadata” validate the manifest (F5)"
 path = "File: {path}"
 path_new = "New file: {path} (not saved yet)"
 screenshot_failed = "Could not save screenshot: {path}"
+
+[menu]
+file = "File"
+open = "Open …"
+language = "Language"
+quit = "Quit"
 
 [tab]
 source = "Source"
@@ -41,6 +51,9 @@ error = "Line {line}, column {column}: {message}   (F2 jumps to the error)"
 unsaved_title = "Unsaved changes"
 unsaved_close = "Cargo.toml has been modified. Discard changes and close?"
 unsaved_reload = "Cargo.toml has been modified. Discard changes and reload?"
+unsaved_open = "Cargo.toml has been modified. Discard changes and open another one?"
+open_title = "Open Cargo.toml"
+open_filter = "Cargo manifest"
 save_title = "Save"
 check_title = "Check by Cargo"
 check_save_first = "Cargo checks the saved file. Save and check now?"

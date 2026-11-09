@@ -44,6 +44,7 @@ fn main() {
             "existing_file_is_loaded_unchanged",
             existing_file_is_loaded_unchanged,
         ),
+        ("standalone_menu", standalone_menu),
     ];
     for (name, test) in tests {
         test();
@@ -124,6 +125,7 @@ fn open(dir: &Path) -> Editor {
         project_dir: dir.to_path_buf(),
         source: source(),
         size: (1100, 720),
+        menu: false,
     });
     editor.show();
     Application::process_events();
@@ -469,4 +471,55 @@ fn existing_file_is_loaded_unchanged() {
     editor.select_tab(Tab::Source);
     assert_eq!(editor.text(), original, "Tabwechsel ändert nichts");
     std::fs::remove_dir_all(dir).ok();
+}
+
+/// Eigenständig mit Menü „Datei“: Sprache wechseln (Text bleibt erhalten),
+/// anderes Projekt öffnen.
+fn standalone_menu() {
+    use ct_editor::ui::Request;
+    use ct_editor::ui::standalone::Standalone;
+    let dir = temp_dir("standalone");
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(
+        dir.join("Cargo.toml"),
+        "[package]\nname = \"eins\"\nversion = \"0.1.0\"\n",
+    )
+    .unwrap();
+    let other = temp_dir("standalone-other");
+    std::fs::create_dir_all(&other).unwrap();
+    std::fs::write(
+        other.join("Cargo.toml"),
+        "[package]\nname = \"drei\"\nversion = \"0.1.0\"\n",
+    )
+    .unwrap();
+    let frame = Standalone::start(&dir, source(), (1100, 720), false);
+    Application::process_events();
+    assert_eq!(frame.editor().shared().save_button.text(), "Speichern");
+    frame.editor().set_current_tab(Tab::Package.index());
+    let edited = "[package]\nname = \"zwei\"\nversion = \"0.1.0\"\n";
+    frame.editor().set_source_text(edited);
+    assert!(frame.editor().is_dirty());
+
+    // Menü Datei → Sprache → English: neu aufgebaut, Text und Tab bleiben.
+    frame
+        .editor()
+        .window()
+        .widget()
+        .activate_menu_item("lang.en");
+    wait_until("englische Oberfläche", || {
+        Application::process_events();
+        frame.editor().shared().save_button.text() == "Save"
+    });
+    assert_eq!(frame.editor().text(), edited);
+    assert!(frame.editor().is_dirty());
+    assert_eq!(frame.editor().current_tab(), Tab::Package.index());
+
+    // Anderes Projekt öffnen (der Dateidialog liefert sonst den Ordner).
+    frame.handle(Request::Open(other.clone()));
+    Application::process_events();
+    assert_eq!(frame.editor().manifest_path(), other.join("Cargo.toml"));
+    assert!(!frame.editor().is_dirty());
+    i18n::set_language("de");
+    let _ = std::fs::remove_dir_all(&dir);
+    let _ = std::fs::remove_dir_all(&other);
 }

@@ -2,6 +2,10 @@
 # Neue Sprache: Datei kopieren (z. B. fr.toml), Werte übersetzen, Schlüssel
 # unverändert lassen. Platzhalter in {geschweiften} Klammern beibehalten.
 
+[language]
+# Name dieser Sprache in ihr selbst (Menü „Sprache“) / name of this language in itself
+name = "Deutsch"
+
 [app]
 save = "Speichern"
 save_tip = "Cargo.toml speichern (Strg+S)"
@@ -12,6 +16,12 @@ check_tip = "Manifest durch „cargo metadata“ prüfen lassen (F5)"
 path = "Datei: {path}"
 path_new = "Neue Datei: {path} (noch nicht gespeichert)"
 screenshot_failed = "Screenshot konnte nicht gespeichert werden: {path}"
+
+[menu]
+file = "Datei"
+open = "Öffnen …"
+language = "Sprache"
+quit = "Beenden"
 
 [tab]
 source = "Quelltext"
@@ -41,6 +51,9 @@ error = "Zeile {line}, Spalte {column}: {message}   (F2 springt zur Fehlerstelle
 unsaved_title = "Ungespeicherte Änderungen"
 unsaved_close = "Die Cargo.toml wurde geändert. Änderungen verwerfen und schließen?"
 unsaved_reload = "Die Cargo.toml wurde geändert. Änderungen verwerfen und neu laden?"
+unsaved_open = "Die Cargo.toml wurde geändert. Änderungen verwerfen und eine andere öffnen?"
+open_title = "Cargo.toml öffnen"
+open_filter = "Cargo-Manifest"
 save_title = "Speichern"
 check_title = "Prüfung durch Cargo"
 check_save_first = "Cargo prüft die gespeicherte Datei. Jetzt speichern und prüfen?"

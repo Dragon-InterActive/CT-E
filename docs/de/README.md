@@ -35,6 +35,7 @@ ct-editor --help                                 # alle Optionen
 | `--offline` | keine Verbindung zu crates.io |
 | `--screenshot BILD.png` | Fenster als Bild speichern und beenden (ohne Bildschirm) |
 | `--size 1100x720` | Fenstergröße |
+| `--embedded` | von Freya TDE gestartet: ohne Menü „Datei“, Sprache wird nicht gespeichert |
 
 **Gibt es im Ordner keine `Cargo.toml`,** bereitet der Editor eine neue vor
 (Paketname = Ordnername, Version 0.1.0, Edition 2024). Die Datei entsteht erst beim
@@ -42,6 +43,14 @@ Speichern; die Kopfzeile zeigt bis dahin „Neue Datei“. Eine vorhandene Datei
 automatisch geladen – auch wenn sie Syntaxfehler enthält (diese werden markiert).
 
 Exit-Code: `0` bei normalem Ende.
+
+**Eigenständig oder in Freya TDE:** Allein gestartet hat der Editor ein Menü
+**Datei** mit *Öffnen …* (Strg+O, eine andere `Cargo.toml`), *Sprache* (Oberfläche
+sofort umstellen; ungespeicherte Änderungen bleiben erhalten) und *Beenden* (Strg+Q).
+Die gewählte Sprache merkt er sich in `~/.config/ct-editor/settings.toml` (macOS
+`~/Library/Application Support/ct-editor/`, Windows `%APPDATA%\ct-editor\`); `--lang`
+geht vor. Freya TDE startet ihn mit `--embedded`: ohne Menü, Datei und Sprache
+bestimmt Freya TDE.
 
 Unter Linux läuft der Editor nativ unter Wayland; sein Programmsymbol übergibt GTK
 dem Fenstermanager selbst (Protokoll `xdg-toplevel-icon`, z. B. KDE Plasma ab 6.1).
