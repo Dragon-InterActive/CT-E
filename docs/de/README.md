@@ -182,10 +182,8 @@ alle Schlüssel vorhanden sind.
 Rust ≥ 1.99 und unter Linux GTK 4 mit Entwicklungsdateien (Windows und macOS brauchen nichts weiter) –
 wie für RUF (<https://github.com/Dragon-InterActive/RUF>, `docs/de/erste-schritte.md`).
 
-RUF kommt per Git aus seinem Repository (`Cargo.toml`). Innerhalb von Freya TDE leitet
-dessen `.cargo/config.toml` auf den Ordner `RUF/` um – Änderungen an RUF wirken dort
-sofort. Eigenständig gilt der im `Cargo.lock` festgehaltene Stand; nach einer neuen
-RUF-Version: `cargo update -p ruf -p rncl`.
+RUF kommt per Git aus seinem Repository (`Cargo.toml`), auch innerhalb von Freya TDE;
+der Stand steht im `Cargo.lock`. Nach einer neuen RUF-Version: `cargo update -p ruf -p rncl`.
 
 ```bash
 cd CT-Editor

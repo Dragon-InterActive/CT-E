@@ -1134,6 +1134,7 @@ dependencies = [
 [[package]]
 name = "rncl"
 version = "0.2.0"
+source = "git+https://github.com/Dragon-InterActive/RUF#afcfca929134fe4c72554c1d9f53380d4b5ab6f2"
 dependencies = [
  "ruf",
 ]
@@ -1141,6 +1142,7 @@ dependencies = [
 [[package]]
 name = "ruf"
 version = "0.2.0"
+source = "git+https://github.com/Dragon-InterActive/RUF#afcfca929134fe4c72554c1d9f53380d4b5ab6f2"
 dependencies = [
  "gdk4-macos",
  "gdk4-win32",

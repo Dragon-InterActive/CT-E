@@ -22,8 +22,8 @@ name = "ct_editor"
 path = "src/lib.rs"
 
 [dependencies]
-# RUF aus seinem Repository; innerhalb von Freya TDE leitet `.cargo/config.toml`
-# dort auf den Ordner `RUF/` um. / RUF from its repository (Freya TDE patches it to RUF/).
+# RUF aus seinem Repository, Stand im Cargo.lock; neuer Stand: cargo update -p ruf -p rncl
+# RUF from its repository, pinned in Cargo.lock; update: cargo update -p ruf -p rncl
 ruf = { git = "https://github.com/Dragon-InterActive/RUF", version = "0.2.0" }
 rncl = { git = "https://github.com/Dragon-InterActive/RUF", version = "0.2.0" }
 toml_edit = "0.25.17"
