@@ -43,9 +43,8 @@ contains syntax errors (they are highlighted).
 
 Exit code: `0` on normal termination.
 
-On Linux with Wayland the editor starts through XWayland like Freya TDE
-(`GDK_BACKEND=x11` unless set otherwise): only then do the title bar and task bar show
-its program icon instead of the placeholder. `GDK_BACKEND=wayland` forces native Wayland.
+On Linux the editor runs natively on Wayland; GTK hands its program icon to the window
+manager itself (protocol `xdg-toplevel-icon`, e.g. KDE Plasma 6.1 and later).
 
 ## The tabs
 

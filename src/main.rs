@@ -22,15 +22,6 @@ const ICONS: [(u32, &[u8]); 7] = [
 ];
 
 fn main() -> ExitCode {
-    // Unter Wayland zeigt der Fenstermanager das Symbol eines Fensters nur über
-    // eine installierte .desktop-Datei (sonst das Platzhalter-„W“). Wie Freya TDE
-    // deshalb unter Linux über X11/XWayland, wenn nichts anderes gesetzt ist.
-    #[cfg(all(unix, not(target_os = "macos")))]
-    if std::env::var_os("GDK_BACKEND").is_none() && std::env::var_os("WAYLAND_DISPLAY").is_some() {
-        // SAFETY: ganz am Programmanfang, noch vor jedem weiteren Thread.
-        unsafe { std::env::set_var("GDK_BACKEND", "x11") };
-    }
-
     let cli = Cli::parse();
 
     if let Some(dir) = &cli.locales
@@ -43,6 +34,8 @@ fn main() -> ExitCode {
     // Screenshots ohne Bildschirm: unter Linux mit `xvfb-run` starten.
     let app = Application::new();
     app.set_name("CT-Editor");
+    // Unter Wayland übergibt GTK das Symbol per xdg-toplevel-icon (KWin, GNOME
+    // …), unter X11 als _NET_WM_ICON; ohne Symbol zeigt Wayland ein „W“.
     Application::set_icon("ct-editor", &ICONS);
 
     let source: Arc<dyn CrateSource> = if cli.offline {
