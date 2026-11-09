@@ -6,7 +6,7 @@ edition = "2024"
 rust-version = "1.99"
 license = "MIT OR Apache-2.0"
 authors = ["Dragon Software <info@dragon-software.net>"]
-repository = "https://github.com/Dragon-InterActive/Freya-TD"
+repository = "https://github.com/Dragon-InterActive/CT-E"
 keywords = ["cargo", "toml", "editor", "gui", "rad"]
 categories = ["development-tools", "gui"]
 
@@ -22,8 +22,10 @@ name = "ct_editor"
 path = "src/lib.rs"
 
 [dependencies]
-ruf = { path = "../RUF/crates/ruf", version = "0.2.0" }
-rncl = { path = "../RUF/crates/rncl", version = "0.2.0" }
+# RUF aus seinem Repository; innerhalb von Freya TDE leitet `.cargo/config.toml`
+# dort auf den Ordner `RUF/` um. / RUF from its repository (Freya TDE patches it to RUF/).
+ruf = { git = "https://github.com/Dragon-InterActive/RUF", version = "0.2.0" }
+rncl = { git = "https://github.com/Dragon-InterActive/RUF", version = "0.2.0" }
 toml_edit = "0.25.17"
 ureq = { version = "3.5.0", features = ["json"] }
 serde = { version = "1.0.229", features = ["derive"] }

@@ -180,11 +180,16 @@ alle Schlüssel vorhanden sind.
 ### Voraussetzungen
 
 Rust ≥ 1.99 und unter Linux GTK 4 mit Entwicklungsdateien (Windows und macOS brauchen nichts weiter) –
-wie für RUF (`../RUF/docs/de/erste-schritte.md`).
+wie für RUF (<https://github.com/Dragon-InterActive/RUF>, `docs/de/erste-schritte.md`).
+
+RUF kommt per Git aus seinem Repository (`Cargo.toml`). Innerhalb von Freya TDE leitet
+dessen `.cargo/config.toml` auf den Ordner `RUF/` um – Änderungen an RUF wirken dort
+sofort. Eigenständig gilt der im `Cargo.lock` festgehaltene Stand; nach einer neuen
+RUF-Version: `cargo update -p ruf -p rncl`.
 
 ```bash
 cd CT-Editor
-cargo run -- --lang de --path ../RUF                 # Editor starten
+cargo run -- --lang de --path .                      # Editor starten (eigenständig, mit Menü)
 cargo test                                           # Logik- und GUI-Tests (Linux ohne Bildschirm: xvfb-run -a cargo test)
 cargo test -- --ignored live_crates_io               # Test gegen das echte crates.io
 cargo clippy --all-targets                           # muss warnungsfrei sein
@@ -302,4 +307,4 @@ der in den Sprachdateien fehlt.
 - **Sichtprüfung ohne Bildschirm:** `ct-editor --offline --tab package --screenshot /tmp/p.png`
   bzw. `xvfb-run -a cargo run --example remote_control -- demo serde derive /tmp/d.png`
   – das Bild danach ansehen.
-- Die RUF-Skills (`../RUF/.claude/skills`) gelten auch hier.
+- Die RUF-Skills (`.claude/skills` im RUF-Repository bzw. `../RUF` in Freya TDE) gelten auch hier.

@@ -2,7 +2,9 @@
 
 Projektziel und Vorgaben: `CLAUDE.md`. Handbuch: `docs/de/README.md` / `docs/en/README.md`.
 Ausführliche Anleitung: `.claude/skills/ct-editor/SKILL.md`. Für die UI-Bibliothek gelten
-zusätzlich die RUF-Skills unter `../RUF/.claude/skills/` und `../RUF/AGENTS.md`.
+zusätzlich die RUF-Skills (`.claude/skills/`) und `AGENTS.md` von RUF (https://github.com/Dragon-InterActive/RUF; in Freya TDE unter `../RUF/`).
+RUF ist eine Git-Abhängigkeit; in Freya TDE leitet `.cargo/config.toml` auf `../RUF` um. Neue RUF-Funktionen
+erst in RUF committen und pushen, sonst baut der CT-Editor eigenständig nicht.
 
 ## Aufbau
 
@@ -10,7 +12,7 @@ zusätzlich die RUF-Skills unter `../RUF/.claude/skills/` und `../RUF/AGENTS.md`
   mit Unit-Tests. Logik gehört hierher, nicht in `ui/`.
 - `src/ui/mod.rs` – `Editor`, `Shared` (gemeinsamer Zustand), Speichern/Laden/Prüfen.
 - `src/ui/*_tab.rs` – je Tab: `build()` (Widgets), `layout(w, h)`, `refresh(&State)`, `connect()`.
-- `locales/{de,en}.toml` – alle sichtbaren Texte. `tests/gui.rs` – GUI-Tests (Linux ohne Bildschirm: `xvfb-run -a`). Release für Windows/macOS: `../RUF/tools/bundle-*.sh` (`../RUF/docs/de/release.md`).
+- `locales/{de,en}.toml` – alle sichtbaren Texte. `tests/gui.rs` – GUI-Tests (Linux ohne Bildschirm: `xvfb-run -a`). Release für Windows/macOS: `tools/bundle-*.sh` und `docs/de/release.md` im RUF-Repository.
 
 ## Befehle
 

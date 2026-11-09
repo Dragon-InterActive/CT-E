@@ -176,11 +176,16 @@ language permanently, put the file into `locales/` and register it in `src/i18n.
 ### Requirements
 
 Rust ≥ 1.99 and, on Linux, GTK 4 with development files (Windows and macOS need nothing else) –
-the same as for RUF (`../RUF/docs/en/getting-started.md`).
+the same as for RUF (<https://github.com/Dragon-InterActive/RUF>, `docs/en/getting-started.md`).
+
+RUF comes via Git from its repository (`Cargo.toml`). Inside Freya TDE its
+`.cargo/config.toml` points to the `RUF/` folder instead – changes to RUF take effect
+there at once. Standalone, the version pinned in `Cargo.lock` applies; after a new RUF
+version: `cargo update -p ruf -p rncl`.
 
 ```bash
 cd CT-Editor
-cargo run -- --lang en --path ../RUF                 # start the editor
+cargo run -- --lang en --path .                      # start the editor (standalone, with menu)
 cargo test                                           # logic and GUI tests (Linux without a display: xvfb-run -a cargo test)
 cargo test -- --ignored live_crates_io               # test against the real crates.io
 cargo clippy --all-targets                           # must be warning-free
@@ -298,4 +303,4 @@ is missing from the language files.
 - **Visual check without a screen:** `ct-editor --offline --tab package --screenshot /tmp/p.png`
   or `xvfb-run -a cargo run --example remote_control -- demo serde derive /tmp/d.png en`
   – then look at the image.
-- The RUF skills (`../RUF/.claude/skills`) apply here as well.
+- The RUF skills (`.claude/skills` in the RUF repository, `../RUF` inside Freya TDE) apply here as well.
