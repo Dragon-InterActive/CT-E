@@ -286,6 +286,21 @@ deps.apply.click();                                // hinzufügen
 editor.save()?;
 ```
 
+### Releases
+
+Ein Tag `v*` startet den Workflow `.github/workflows/release.yml` auf GitHub:
+
+```bash
+git tag v0.3.0 && git push origin v0.3.0
+```
+
+Er baut Linux (`.tar.gz`, GTK 4 vom System), Windows (`.zip` samt GTK-Laufzeit, gebaut in
+MSYS2) und macOS (`CT-Editor.app` als `.zip`, Homebrew, ad-hoc signiert) und hängt alles an
+ein GitHub-Release. Von Hand gestartet (Actions → Release → Run workflow) baut er nur; die
+Pakete liegen dann als Artefakte am Lauf. Die Skripte für die GTK-Laufzeit kommen aus RUF,
+vom Stand im `Cargo.lock`. Unter macOS meldet Gatekeeper das unsignierte Programm beim
+ersten Start (Rechtsklick → Öffnen).
+
 ### Tests
 
 | Ebene | Ort | Läuft |

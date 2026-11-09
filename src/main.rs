@@ -1,5 +1,9 @@
 //! Startpunkt: `ct-editor --lang de --path <projektordner>`.
 
+// Unter Windows ein GUI-Programm ohne eigenes Konsolenfenster (Release-Builds);
+// aus einer Eingabeaufforderung gestartet, schreibt es in deren Konsole.
+#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
+
 use std::process::ExitCode;
 use std::sync::Arc;
 
@@ -23,6 +27,7 @@ const ICONS: [(u32, &[u8]); 7] = [
 ];
 
 fn main() -> ExitCode {
+    attach_parent_console();
     let cli = Cli::parse();
 
     if let Some(dir) = &cli.locales
@@ -97,4 +102,16 @@ fn main() -> ExitCode {
     drop(embedded);
     drop(standalone);
     ExitCode::from(code.clamp(0, 255) as u8)
+}
+
+/// Windows (Release): Ausgaben wie `--help` und Fehlermeldungen in die Konsole
+/// schreiben, aus der das Programm gestartet wurde (ohne Konsole: nichts).
+fn attach_parent_console() {
+    #[cfg(all(windows, not(debug_assertions)))]
+    // SAFETY: einfacher Systemaufruf ohne Zeiger, ganz am Programmanfang.
+    unsafe {
+        windows_sys::Win32::System::Console::AttachConsole(
+            windows_sys::Win32::System::Console::ATTACH_PARENT_PROCESS,
+        );
+    }
 }
