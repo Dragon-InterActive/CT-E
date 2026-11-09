@@ -1,27 +1,37 @@
-# Projekt Name und Beschreibung
+# CT-Editor – Hinweise für KI-Assistenten und Mitwirkende
 
-`CT-Editor` ist der Name für den Cargo TOML Editor des Projekts Freya TDE. Seine Funktion ist die Erstellung und Modifizierung der carg.toml mittels Visuellem Editor.
-Hierbei soll der Editor auf die cargo-eigenen Funktionen zurückgreifen um das Hinzufügen und Editieren von Crates zu ermöglichen und dabei die Syntax der toml beachtet und überwacht. Neue Crates sollen über ein Such-Feld gesucht und ausgewählt werden können. Gewählte Crates werden dann mit Kurzbeschreibung und ihren Features aufgelistet. Features können dann per checkbox ausgewählt werden. Default ist "alle".
+*Notes for AI assistants and contributors: what the CT-Editor is, its requirements and
+conventions. Structure, rules and commands: `AGENTS.md`; manual: `docs/de`, `docs/en`.*
 
-Optisch soll der Editor 2 Tabs haben. Tab#1 ist der Quell-Code der cargo.toml und Tab#2 ist die visuelle Schicht.
+## Was der CT-Editor ist
 
-## Umsetzung und Nutzung von Crates
+Der **CT-Editor** (Cargo TOML Editor) erstellt und bearbeitet `Cargo.toml`-Dateien mit
+einem visuellen Editor. Er ist eigenständig nutzbar und zugleich Teil des RAD-Tools
+[Freya TDE](https://github.com/Dragon-InterActive/Freya-TD).
 
-Wichtig ist, dass der Editor i18n (Multi-Language) ist. Die aktuelle Sprache und der Pfad wird beim Aufruf übergeben, da der Editor später als Teil des gesamten Freya TDE sein wird und entsprechend von der Oberfläche aus aufgerufen wird.
+- Er stützt sich auf Cargos eigene Mittel (`cargo metadata` zur Prüfung) und überwacht
+  die TOML-Syntax; die Formatierung des Anwenders bleibt erhalten (`toml_edit`).
+- Neue Crates werden über ein Suchfeld auf crates.io gesucht und ausgewählt; gewählte
+  Crates erscheinen mit Kurzbeschreibung und ihren Features, die per Checkbox gewählt
+  werden (Standard: die Default-Features).
+- Registerkarten: der Quelltext der `Cargo.toml` und die visuelle Schicht
+  (Abhängigkeiten, Paket, Features, Erweitert).
 
-RUF(Rust native UI Framework) wurde in Rust erstellt und arbeitet ohne Qt6 Libraray. Im Unterverzeichnis ../RUF findes du alles weitere und unter ../RUF/.claude/skills findest du auch alle benötigten Skills um RUF für den Editor zu benutzen.
-Weitere Crates, welche dir als sinnvoll erscheinen, sollen installiert und benutzt werden. Die Entscheidung liegt vollständig bei dir.
+## Anforderungen
 
-### Version und Github
+- **Mehrsprachig (i18n):** alle Texte in `locales/<sprache>.toml`.
+- **Zwei Modi aus einer Codebasis:** eigenständig mit Menü „Datei“ (Öffnen, Sprache,
+  Beenden; die Sprache wird gespeichert) oder eingebettet (`--embedded`): Freya TDE
+  übergibt Pfad und Sprache beim Aufruf, der Editor zeigt kein Menü.
+- **Oberfläche mit [RUF](https://github.com/Dragon-InterActive/RUF)** (GTK 4), als
+  Git-Abhängigkeit; Fehlendes wird in RUF ergänzt, nicht im Editor umgangen. Die
+  RUF-Skills (`.claude/skills/` im RUF-Repository) gelten auch hier.
+- Weitere Crates nur in aktuellen, stabilen Versionen und mit freier Lizenz.
 
-Mein Github-Name ist Dragon-InterActive und der Git-Upload erfolgt über das gesamt-Projekt Freya TDE.
-Rust-Version ist 1.99.1 also min.-Version auf 1.99
+## Konventionen
 
-### Dokumentation und AI
-
-Erstelle eine Dokumentation in deutsch und englisch mit Beispielen.
-Bei der Entwicklung berücksichtige die Nutzung von KI.
-
-## Lizenz
-
-Das gesamte Projekt steht unter der Doppellizenz MIT OR Apache-2.0 (nach Wahl des Nutzers).
+- Rust ≥ 1.99, Edition 2024; `cargo clippy` warnungsfrei.
+- Dokumentation mit Beispielen auf Deutsch und Englisch.
+- Die Nutzung durch KI-Assistenten mitdenken: Logik ohne Oberfläche als Bibliothek,
+  Skill in `.claude/skills/ct-editor/`.
+- Lizenz: MIT OR Apache-2.0 (nach Wahl des Nutzers).
