@@ -29,7 +29,7 @@ jobs:
   linux:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: GTK 4 und GtkSourceView 5
         run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libgtksourceview-5-dev
       - uses: dtolnay/rust-toolchain@stable
@@ -46,7 +46,7 @@ jobs:
           cp assets/icons/*.png assets/ct-editor.svg $dir/icons/
           tar czf $dir.tar.gz $dir
           echo "PACKAGE=$dir.tar.gz" >> "$GITHUB_ENV"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: linux
           path: ${{ env.PACKAGE }}
@@ -57,19 +57,21 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: RUF-Stand aus Cargo.lock
         id: ruf
         shell: bash
         run: echo "rev=$(grep -m1 -o 'Dragon-InterActive/RUF#[0-9a-f]*' Cargo.lock | cut -d'#' -f2)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: Dragon-InterActive/RUF
           ref: ${{ steps.ruf.outputs.rev }}
           path: ruf
-      - uses: dtolnay/rust-toolchain@stable
+      # Rust mit GNU-Host (passt zu MSYS2; das MSVC-Rust würde für das GNU-Ziel
+      # cross-kompilieren, und pkg-config der GTK-Crates verweigert das).
+      - uses: dtolnay/rust-toolchain@master
         with:
-          targets: x86_64-pc-windows-gnu
+          toolchain: stable-x86_64-pc-windows-gnu
       - uses: msys2/setup-msys2@v2
         with:
           msystem: UCRT64
@@ -84,28 +86,28 @@ jobs:
             zip
       - uses: Swatinem/rust-cache@v2
       - name: Bauen
-        run: cargo build --release --locked --target x86_64-pc-windows-gnu
+        run: cargo build --release --locked
       - name: Paket mit GTK-Laufzeit
         run: |
           version=$(cargo pkgid | sed 's/.*[#@]//')
           dir=ct-editor-$version-windows-x86_64
-          ruf/tools/bundle-windows.sh target/x86_64-pc-windows-gnu/release/ct-editor.exe \
+          ruf/tools/bundle-windows.sh target/release/ct-editor.exe \
               $dir docs LICENSE-MIT LICENSE-APACHE README.md
           zip -qr $dir.zip $dir
           echo "PACKAGE=$dir.zip" >> "$GITHUB_ENV"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows
           path: ${{ env.PACKAGE }}
 
   macos:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: RUF-Stand aus Cargo.lock
         id: ruf
         run: echo "rev=$(grep -m1 -o 'Dragon-InterActive/RUF#[0-9a-f]*' Cargo.lock | cut -d'#' -f2)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: Dragon-InterActive/RUF
           ref: ${{ steps.ruf.outputs.rev }}
@@ -126,7 +128,7 @@ jobs:
           cp -r docs README.md LICENSE-MIT LICENSE-APACHE $dir/
           ditto -c -k --keepParent $dir $dir.zip
           echo "PACKAGE=$dir.zip" >> "$GITHUB_ENV"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: macos
           path: ${{ env.PACKAGE }}
@@ -136,11 +138,11 @@ jobs:
     needs: [linux, windows, macos]
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: packages
           merge-multiple: true
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: packages/*
           generate_release_notes: true
