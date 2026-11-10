@@ -7,7 +7,7 @@ conventions. Structure, rules and commands: `AGENTS.md`; manual: `docs/de`, `doc
 
 Der **CT-Editor** (Cargo TOML Editor) erstellt und bearbeitet `Cargo.toml`-Dateien mit
 einem visuellen Editor. Er ist eigenständig nutzbar und zugleich Teil des RAD-Tools
-[Freya TDE](https://github.com/Dragon-InterActive/Freya-TD).
+[Freya TDE](https://github.com/Dragon-InterActive/Freya-TDE).
 
 - Er stützt sich auf Cargos eigene Mittel (`cargo metadata` zur Prüfung) und überwacht
   die TOML-Syntax; die Formatierung des Anwenders bleibt erhalten (`toml_edit`).
