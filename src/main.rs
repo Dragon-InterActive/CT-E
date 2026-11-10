@@ -1,4 +1,4 @@
-//! Startpunkt: `ct-editor --lang de --path <projektordner>`.
+//! Startpunkt: `ct-editor --lang de --theme dark --path <projektordner>`.
 
 // Unter Windows ein GUI-Programm ohne eigenes Konsolenfenster (Release-Builds);
 // aus einer Eingabeaufforderung gestartet, schreibt es in deren Konsole.
@@ -8,7 +8,7 @@ use std::process::ExitCode;
 use std::sync::Arc;
 
 use clap::Parser;
-use ct_editor::cli::Cli;
+use ct_editor::cli::{Cli, Theme};
 use ct_editor::crates_io::{CrateSource, CratesIo, StaticSource};
 use ct_editor::ui::standalone::Standalone;
 use ct_editor::ui::{Editor, EditorOptions};
@@ -35,11 +35,15 @@ fn main() -> ExitCode {
     {
         eprintln!("ct-editor: {error}");
     }
-    // Eigenständig: gespeicherte Sprachwahl (zwischen --lang und LANG).
+    // Eigenständig: gespeicherte Wahl (zwischen Kommandozeile und System).
     let saved = (!cli.embedded)
-        .then(|| ct_editor::settings::Settings::load().language)
-        .flatten();
-    i18n::set_language(&cli.language_with(saved.as_deref()));
+        .then(ct_editor::settings::Settings::load)
+        .unwrap_or_default();
+    i18n::set_language(&cli.language_with(saved.language.as_deref()));
+    let theme = cli
+        .theme
+        .or_else(|| saved.theme.as_deref().and_then(Theme::parse))
+        .unwrap_or_default();
 
     // Screenshots ohne Bildschirm: unter Linux mit `xvfb-run` starten.
     let app = Application::new();
@@ -47,6 +51,7 @@ fn main() -> ExitCode {
     // Unter Wayland übergibt GTK das Symbol per xdg-toplevel-icon (KWin, GNOME
     // …), unter X11 als _NET_WM_ICON; ohne Symbol zeigt Wayland ein „W“.
     Application::set_icon("ct-editor", &ICONS);
+    ct_editor::ui::set_theme(theme);
 
     let source: Arc<dyn CrateSource> = if cli.offline {
         Arc::new(StaticSource::default())

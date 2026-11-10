@@ -23,6 +23,10 @@ open = "Open …"
 save = "Save"
 save_as = "Save as …"
 language = "Language"
+appearance = "Appearance"
+theme_system = "System"
+theme_light = "Light"
+theme_dark = "Dark"
 quit = "Quit"
 
 [tab]

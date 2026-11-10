@@ -1,4 +1,4 @@
-//! Persönliche Einstellungen des eigenständigen Editors (vorerst die Sprache),
+//! Persönliche Einstellungen des eigenständigen Editors (Sprache, Darstellung),
 //! ohne Oberfläche. Gespeichert als TOML in `<config>/ct-editor/settings.toml`
 //! (Linux `$XDG_CONFIG_HOME` bzw. `~/.config`, macOS
 //! `~/Library/Application Support`, Windows `%APPDATA%`); `CT_EDITOR_CONFIG`
@@ -8,7 +8,7 @@
 //! use ct_editor::settings::Settings;
 //!
 //! let file = std::env::temp_dir().join(format!("ct-settings-doc-{}.toml", std::process::id()));
-//! Settings { language: Some("de".into()) }.save_to(&file).unwrap();
+//! Settings { language: Some("de".into()), ..Settings::default() }.save_to(&file).unwrap();
 //! assert_eq!(Settings::load_from(&file).language.as_deref(), Some("de"));
 //! # let _ = std::fs::remove_file(file);
 //! ```
@@ -23,6 +23,8 @@ use toml_edit::{DocumentMut, value};
 pub struct Settings {
     /// Sprache der Oberfläche (`de`, `en` …), gewählt im Menü „Sprache“.
     pub language: Option<String>,
+    /// Darstellung (`system`, `light`, `dark`), gewählt im Menü „Darstellung“.
+    pub theme: Option<String>,
 }
 
 impl Settings {
@@ -54,12 +56,15 @@ impl Settings {
         let Ok(doc) = DocumentMut::from_str(&text) else {
             return Self::default();
         };
-        Self {
-            language: doc
-                .get("language")
+        let text = |key: &str| {
+            doc.get(key)
                 .and_then(|v| v.as_str())
                 .filter(|v| !v.is_empty())
-                .map(str::to_owned),
+                .map(str::to_owned)
+        };
+        Self {
+            language: text("language"),
+            theme: text("theme"),
         }
     }
 
@@ -69,10 +74,12 @@ impl Settings {
             .ok()
             .and_then(|t| DocumentMut::from_str(&t).ok())
             .unwrap_or_default();
-        match &self.language {
-            Some(language) => doc["language"] = value(language.as_str()),
-            None => {
-                doc.remove("language");
+        for (key, v) in [("language", &self.language), ("theme", &self.theme)] {
+            match v {
+                Some(v) => doc[key] = value(v.as_str()),
+                None => {
+                    doc.remove(key);
+                }
             }
         }
         if let Some(dir) = file.parent() {
@@ -108,6 +115,7 @@ mod tests {
         std::fs::write(&file, "# eigene Notiz\nother = 1\n").unwrap();
         Settings {
             language: Some("en".into()),
+            theme: Some("dark".into()),
         }
         .save_to(&file)
         .unwrap();
@@ -117,6 +125,7 @@ mod tests {
             "{text}"
         );
         assert_eq!(Settings::load_from(&file).language.as_deref(), Some("en"));
+        assert_eq!(Settings::load_from(&file).theme.as_deref(), Some("dark"));
         Settings::default().save_to(&file).unwrap();
         assert_eq!(Settings::load_from(&file), Settings::default());
         std::fs::write(&file, "kaputt = [").unwrap();

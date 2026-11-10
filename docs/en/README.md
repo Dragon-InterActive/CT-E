@@ -30,12 +30,13 @@ ct-editor --help                                # all options
 |---|---|
 | `PROJECT_DIR` / `-p, --path` | folder containing `Cargo.toml`, or the `Cargo.toml` itself (default: current folder) |
 | `-l, --lang` | language, e.g. `de`, `en`, `de_DE.UTF-8` (default: `LANG`, else English) |
+| `--theme` | appearance: `system` (like the system), `light`, `dark` (default: saved choice, else `system`) |
 | `--locales DIR` | load additional translation files |
 | `--tab` | start tab: `source`, `dependencies` (default), `package`, `features`, `advanced` |
 | `--offline` | no connection to crates.io |
 | `--screenshot IMAGE.png` | save the window as an image and exit (works headless) |
 | `--size 1100x720` | window size |
-| `--embedded` | started by Freya TDE: no File menu, the language is not saved |
+| `--embedded` | started by Freya TDE: no File menu, language and appearance are not saved |
 
 **If the folder has no `Cargo.toml`,** the editor prepares a new one (package name =
 folder name, version 0.1.0, edition 2024). The file is only created when saving; until
@@ -47,11 +48,11 @@ Exit code: `0` on normal termination.
 **Standalone or inside Freya TDE:** started on its own, the editor has a **File** menu
 with *Open …* (Ctrl+O, another `Cargo.toml`), *Save* (Ctrl+S), *Save as …*
 (Ctrl+Shift+S; saved as `<folder>/Cargo.toml`, the editor then continues with that
-file), *Language* (switches the interface at once; unsaved changes are kept) and *Quit*
-(Ctrl+Q). A new, never saved file asks for the location on saving, like *Save as …*. It remembers the chosen language in
+file), *Language* (switches the interface at once; unsaved changes are kept), *Appearance* (System, Light, Dark) and *Quit*
+(Ctrl+Q). A new, never saved file asks for the location on saving, like *Save as …*. It remembers the chosen language and appearance in
 `~/.config/ct-editor/settings.toml` (macOS `~/Library/Application Support/ct-editor/`,
-Windows `%APPDATA%\ct-editor\`); `--lang` takes precedence. Freya TDE starts it with
-`--embedded`: no menu, Freya TDE decides file and language.
+Windows `%APPDATA%\ct-editor\`); `--lang` and `--theme` take precedence. Freya TDE starts it with
+`--embedded`: no menu, Freya TDE decides file, language and appearance (its settings).
 
 On Linux the editor runs natively on Wayland; GTK hands its program icon to the window
 manager itself (protocol `xdg-toplevel-icon`, e.g. KDE Plasma 6.1 and later).

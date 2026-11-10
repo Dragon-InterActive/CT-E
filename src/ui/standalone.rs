@@ -1,7 +1,7 @@
 //! Der eigenständige Betrieb: ein [`Editor`] mit Menü „Datei“, den dieser
 //! Rahmen bei „Öffnen“ und „Sprache“ neu aufbaut – an derselben Stelle, mit
 //! derselben Registerkarte; beim Sprachwechsel bleibt ungespeicherter Text
-//! erhalten. Die gewählte Sprache wird gespeichert ([`Settings`]).
+//! erhalten. Gewählte Sprache und Darstellung werden gespeichert ([`Settings`]).
 //!
 //! Von Freya TDE gestartet (`--embedded`) läuft der Editor ohne diesen Rahmen.
 
@@ -60,26 +60,40 @@ impl Standalone {
             Request::Open(dir) => self.open(&dir, None),
             Request::Language(language) => {
                 let chosen = i18n::set_language(&language);
-                if self.remember_language {
-                    let settings = Settings {
-                        language: Some(chosen),
-                    };
-                    if let Err(error) = settings.save() {
-                        eprintln!("ct-editor: {error}");
-                    }
-                }
-                // Gleicher Ordner; geänderter Text kommt mit.
-                let (dir, text) = {
-                    let editor = self.editor();
-                    let dir = editor
-                        .manifest_path()
-                        .parent()
-                        .map_or_else(|| PathBuf::from("."), Path::to_path_buf);
-                    (dir, editor.is_dirty().then(|| editor.text()))
-                };
-                self.open(&dir, text);
+                self.remember(|s| s.language = Some(chosen));
+                self.rebuild();
+            }
+            Request::Theme(theme) => {
+                super::set_theme(theme);
+                self.remember(|s| s.theme = Some(theme.as_str().to_owned()));
+                // Neu aufbauen, damit das Menü die Wahl zeigt.
+                self.rebuild();
             }
         }
+    }
+
+    /// Speichert eine Änderung der Einstellungen (nicht in Tests).
+    fn remember(&self, change: impl FnOnce(&mut Settings)) {
+        if self.remember_language {
+            let mut settings = Settings::load();
+            change(&mut settings);
+            if let Err(error) = settings.save() {
+                eprintln!("ct-editor: {error}");
+            }
+        }
+    }
+
+    /// Baut den Editor im selben Ordner neu auf; geänderter Text kommt mit.
+    fn rebuild(&self) {
+        let (dir, text) = {
+            let editor = self.editor();
+            let dir = editor
+                .manifest_path()
+                .parent()
+                .map_or_else(|| PathBuf::from("."), Path::to_path_buf);
+            (dir, editor.is_dirty().then(|| editor.text()))
+        };
+        self.open(&dir, text);
     }
 
     /// Baut den Editor für `dir` auf und löst den bisherigen ab.

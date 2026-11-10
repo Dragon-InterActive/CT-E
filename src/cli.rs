@@ -33,6 +33,33 @@ impl Tab {
     }
 }
 
+/// Darstellung (für `--theme` und das Menü „Darstellung“).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
+pub enum Theme {
+    /// Wie das System.
+    #[default]
+    System,
+    Light,
+    Dark,
+}
+
+impl Theme {
+    pub const ALL: [Theme; 3] = [Theme::System, Theme::Light, Theme::Dark];
+
+    /// Name auf der Kommandozeile und in den Einstellungen.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Theme::System => "system",
+            Theme::Light => "light",
+            Theme::Dark => "dark",
+        }
+    }
+
+    pub fn parse(text: &str) -> Option<Self> {
+        Theme::ALL.into_iter().find(|t| t.as_str() == text)
+    }
+}
+
 /// CT-Editor – visueller Editor für Cargo.toml (Freya TDE).
 #[derive(Debug, Clone, Parser)]
 #[command(name = "ct-editor", version, about)]
@@ -49,6 +76,11 @@ pub struct Cli {
     /// Standard: Umgebungsvariable LANG, sonst Englisch.
     #[arg(short, long, value_name = "SPRACHE")]
     pub lang: Option<String>,
+
+    /// Darstellung: system (Standard), light oder dark.
+    /// Standard: gespeicherte Wahl (eigenständig), sonst wie das System.
+    #[arg(long, value_enum, value_name = "DARSTELLUNG")]
+    pub theme: Option<Theme>,
 
     /// Ordner mit zusätzlichen Übersetzungen (`<sprache>.toml`).
     #[arg(long, value_name = "ORDNER")]
@@ -145,6 +177,10 @@ mod tests {
         assert_eq!(cli.language(), "de");
         assert_eq!(cli.tab, Tab::Dependencies);
         assert_eq!(cli.size, (1100, 720));
+        assert_eq!(cli.theme, None);
+        let cli = Cli::parse_from(["ct-editor", "--embedded", "--theme", "dark", "/tmp/p"]);
+        assert_eq!(cli.theme, Some(Theme::Dark));
+        assert_eq!(Theme::parse("light"), Some(Theme::Light));
     }
 
     #[test]

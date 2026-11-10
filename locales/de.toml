@@ -23,6 +23,10 @@ open = "Öffnen …"
 save = "Speichern"
 save_as = "Speichern unter …"
 language = "Sprache"
+appearance = "Darstellung"
+theme_system = "System"
+theme_light = "Hell"
+theme_dark = "Dunkel"
 quit = "Beenden"
 
 [tab]

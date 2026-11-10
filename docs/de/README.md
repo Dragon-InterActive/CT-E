@@ -30,12 +30,13 @@ ct-editor --help                                 # alle Optionen
 |---|---|
 | `PROJEKTORDNER` / `-p, --path` | Ordner mit der `Cargo.toml` oder die `Cargo.toml` selbst (Standard: aktueller Ordner) |
 | `-l, --lang` | Sprache, z. B. `de`, `en`, `de_DE.UTF-8` (Standard: `LANG`, sonst Englisch) |
+| `--theme` | Darstellung: `system` (wie das System), `light`, `dark` (Standard: gespeicherte Wahl, sonst `system`) |
 | `--locales ORDNER` | zusätzliche Übersetzungsdateien laden |
 | `--tab` | Start-Registerkarte: `source`, `dependencies` (Standard), `package`, `features`, `advanced` |
 | `--offline` | keine Verbindung zu crates.io |
 | `--screenshot BILD.png` | Fenster als Bild speichern und beenden (ohne Bildschirm) |
 | `--size 1100x720` | Fenstergröße |
-| `--embedded` | von Freya TDE gestartet: ohne Menü „Datei“, Sprache wird nicht gespeichert |
+| `--embedded` | von Freya TDE gestartet: ohne Menü „Datei“, Sprache und Darstellung werden nicht gespeichert |
 
 **Gibt es im Ordner keine `Cargo.toml`,** bereitet der Editor eine neue vor
 (Paketname = Ordnername, Version 0.1.0, Edition 2024). Die Datei entsteht erst beim
@@ -48,12 +49,12 @@ Exit-Code: `0` bei normalem Ende.
 **Datei** mit *Öffnen …* (Strg+O, eine andere `Cargo.toml`), *Speichern* (Strg+S),
 *Speichern unter …* (Strg+Umschalt+S; gespeichert wird als `<ordner>/Cargo.toml`, danach
 geht es mit dieser Datei weiter), *Sprache* (Oberfläche sofort umstellen; ungespeicherte
-Änderungen bleiben erhalten) und *Beenden* (Strg+Q). Eine neue, noch nie gespeicherte
+Änderungen bleiben erhalten), *Darstellung* (System, Hell, Dunkel) und *Beenden* (Strg+Q). Eine neue, noch nie gespeicherte
 Datei fragt beim Speichern wie *Speichern unter …* nach dem Ort.
-Die gewählte Sprache merkt er sich in `~/.config/ct-editor/settings.toml` (macOS
-`~/Library/Application Support/ct-editor/`, Windows `%APPDATA%\ct-editor\`); `--lang`
-geht vor. Freya TDE startet ihn mit `--embedded`: ohne Menü, Datei und Sprache
-bestimmt Freya TDE.
+Gewählte Sprache und Darstellung merkt er sich in `~/.config/ct-editor/settings.toml` (macOS
+`~/Library/Application Support/ct-editor/`, Windows `%APPDATA%\ct-editor\`); `--lang` und
+`--theme` gehen vor. Freya TDE startet ihn mit `--embedded`: ohne Menü, Datei, Sprache und
+Darstellung bestimmt Freya TDE (Einstellungen).
 
 Unter Linux läuft der Editor nativ unter Wayland; sein Programmsymbol übergibt GTK
 dem Fenstermanager selbst (Protokoll `xdg-toplevel-icon`, z. B. KDE Plasma ab 6.1).

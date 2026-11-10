@@ -18,7 +18,8 @@ submodule.*
 - formatierungserhaltend (Kommentare bleiben), Prüfung durch `cargo metadata`, Deutsch/Englisch, erweiterbar · *format-preserving, validated by Cargo, i18n*
 
 ```bash
-ct-editor --lang de --path /pfad/zum/projekt     # Aufruf durch Freya TDE
+ct-editor --embedded --lang de --theme dark --path /pfad/zum/projekt  # Aufruf durch Freya TDE
+ct-editor --theme light                          # Darstellung: system (Standard), light, dark
 cargo test                                       # Tests (Linux ohne Bildschirm: xvfb-run -a cargo test)
 ```
 

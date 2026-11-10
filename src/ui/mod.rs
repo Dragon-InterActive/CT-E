@@ -106,6 +106,28 @@ pub enum Request {
     Open(PathBuf),
     /// Die Oberfläche in dieser Sprache neu aufbauen.
     Language(String),
+    /// Diese Darstellung verwenden (und merken).
+    Theme(crate::cli::Theme),
+}
+
+thread_local! {
+    static THEME: std::cell::Cell<crate::cli::Theme> = const { std::cell::Cell::new(crate::cli::Theme::System) };
+}
+
+/// Stellt die Darstellung ein (System, Hell, Dunkel).
+pub fn set_theme(theme: crate::cli::Theme) {
+    use crate::cli::Theme;
+    THEME.with(|t| t.set(theme));
+    Application::set_color_scheme(match theme {
+        Theme::System => ruf::ColorScheme::Unknown,
+        Theme::Light => ruf::ColorScheme::Light,
+        Theme::Dark => ruf::ColorScheme::Dark,
+    });
+}
+
+/// Die eingestellte Darstellung.
+pub fn theme() -> crate::cli::Theme {
+    THEME.with(std::cell::Cell::get)
 }
 
 /// Empfänger der Anforderungen aus dem Menü.
@@ -123,6 +145,16 @@ fn menu_bar() -> MenuBar {
             languages.item(&format!("lang.{language}"), &name, None)
         };
     }
+    let mut themes = Menu::new();
+    for t in crate::cli::Theme::ALL {
+        let id = format!("theme.{}", t.as_str());
+        let name = tr!(&format!("menu.theme_{}", t.as_str()));
+        themes = if t == theme() {
+            themes.disabled_item(&id, &format!("{name} ✓"))
+        } else {
+            themes.item(&id, &name, None)
+        };
+    }
     vec![(
         tr!("menu.file"),
         Menu::new()
@@ -131,6 +163,7 @@ fn menu_bar() -> MenuBar {
             .item("file.save_as", &tr!("menu.save_as"), Some("Ctrl+Shift+S"))
             .separator()
             .submenu(&tr!("menu.language"), languages)
+            .submenu(&tr!("menu.appearance"), themes)
             .separator()
             .item("file.quit", &tr!("menu.quit"), Some("Ctrl+Q")),
     )]
@@ -444,6 +477,12 @@ impl Shared {
                 if let Some(language) = other.strip_prefix("lang.") {
                     self.flush_source();
                     self.request(Request::Language(language.to_owned()));
+                } else if let Some(theme) = other
+                    .strip_prefix("theme.")
+                    .and_then(crate::cli::Theme::parse)
+                {
+                    self.flush_source();
+                    self.request(Request::Theme(theme));
                 }
             }
         }
