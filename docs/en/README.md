@@ -45,8 +45,10 @@ contains syntax errors (they are highlighted).
 Exit code: `0` on normal termination.
 
 **Standalone or inside Freya TDE:** started on its own, the editor has a **File** menu
-with *Open …* (Ctrl+O, another `Cargo.toml`), *Language* (switches the interface at
-once; unsaved changes are kept) and *Quit* (Ctrl+Q). It remembers the chosen language in
+with *Open …* (Ctrl+O, another `Cargo.toml`), *Save* (Ctrl+S), *Save as …*
+(Ctrl+Shift+S; saved as `<folder>/Cargo.toml`, the editor then continues with that
+file), *Language* (switches the interface at once; unsaved changes are kept) and *Quit*
+(Ctrl+Q). A new, never saved file asks for the location on saving, like *Save as …*. It remembers the chosen language in
 `~/.config/ct-editor/settings.toml` (macOS `~/Library/Application Support/ct-editor/`,
 Windows `%APPDATA%\ct-editor\`); `--lang` takes precedence. Freya TDE starts it with
 `--embedded`: no menu, Freya TDE decides file and language.
@@ -294,8 +296,14 @@ It builds Linux (`.tar.gz`, GTK 4 from the system), Windows (`.zip` with the GTK
 built in MSYS2) and macOS (`CT-Editor.app` as `.zip`, Homebrew, ad-hoc signed) and attaches
 everything to a GitHub release. Started by hand (Actions → Release → Run workflow) it only
 builds; the packages are then artifacts of the run. The GTK runtime scripts come from RUF,
-at the version in `Cargo.lock`. On macOS, Gatekeeper warns about the unsigned program on
-first start (right-click → Open).
+at the version in `Cargo.lock`.
+
+**First start on macOS:** the program is not notarized by Apple; since macOS 15
+right-click → Open is no longer enough. Choose "Done" in the message, then *System
+Settings → Privacy & Security → "Open Anyway"* (once), or run
+`xattr -dr com.apple.quarantine CT-Editor.app` in the Terminal. **On Windows** SmartScreen
+warns: *More info → Run anyway* (or tick "Unblock" in the ZIP's properties before
+extracting).
 
 Icons: source `assets/ct-editor.svg`; `python3 assets/make-icons.py` builds the PNGs
 (Linux, compiled in), `ct-editor.ico` (embedded in the Windows `.exe` via `build.rs`) and

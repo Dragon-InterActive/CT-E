@@ -127,6 +127,9 @@ fn menu_bar() -> MenuBar {
         tr!("menu.file"),
         Menu::new()
             .item("file.open", &tr!("menu.open"), Some("Ctrl+O"))
+            .item("file.save", &tr!("menu.save"), Some("Ctrl+S"))
+            .item("file.save_as", &tr!("menu.save_as"), Some("Ctrl+Shift+S"))
+            .separator()
             .submenu(&tr!("menu.language"), languages)
             .separator()
             .item("file.quit", &tr!("menu.quit"), Some("Ctrl+Q")),
@@ -159,6 +162,8 @@ pub struct Shared {
     crate_source: Arc<dyn CrateSource>,
     /// Empfänger der Anforderungen aus dem Menü (eigenständiger Betrieb).
     requests: RefCell<Option<RequestHandler>>,
+    /// Eigenständig mit Menü (eine neue Datei fragt beim Speichern nach dem Ort).
+    standalone: bool,
 }
 
 /// Der CT-Editor.
@@ -241,6 +246,7 @@ impl Editor {
             manifest_path,
             crate_source: options.source,
             requests: RefCell::new(None),
+            standalone: options.menu,
         });
 
         Shared::connect(&shared);
@@ -295,6 +301,12 @@ impl Editor {
     /// Speichert die Datei; liefert den Pfad oder eine (übersetzte) Fehlermeldung.
     pub fn save(&self) -> Result<PathBuf, String> {
         self.shared.save()
+    }
+
+    /// „Speichern unter“ ohne Dialog: schreibt `<ordner von chosen>/Cargo.toml`
+    /// und lässt den Rahmen diese Datei öffnen ([`Request::Open`]).
+    pub fn save_as(&self, chosen: &Path) -> Result<PathBuf, String> {
+        self.shared.save_as(chosen)
     }
 
     pub fn select_tab(&self, tab: Tab) {
@@ -357,9 +369,12 @@ impl Shared {
         shared
             .check_button
             .on_clicked(weak0(shared, |s| s.check_interactive()));
-        shared
-            .window
-            .add_shortcut("Ctrl+S", weak0(shared, |s| s.save_interactive()));
+        // Mit Menü trägt der Eintrag „Speichern“ das Kürzel.
+        if !shared.standalone {
+            shared
+                .window
+                .add_shortcut("Ctrl+S", weak0(shared, |s| s.save_interactive()));
+        }
         shared
             .window
             .add_shortcut("F5", weak0(shared, |s| s.check_interactive()));
@@ -422,6 +437,8 @@ impl Shared {
                     self.request(Request::Open(dir));
                 }
             }
+            "file.save" => self.save_interactive(),
+            "file.save_as" => self.save_as_interactive(),
             "file.quit" => self.window.widget().close(),
             other => {
                 if let Some(language) = other.strip_prefix("lang.") {
@@ -667,6 +684,13 @@ impl Shared {
     }
 
     pub fn save(&self) -> Result<PathBuf, String> {
+        let path = self.manifest_path.clone();
+        self.save_to(&path)
+    }
+
+    /// Speichert den Text nach `path` (Ordner werden angelegt). Ist `path`
+    /// nicht die geöffnete Datei, bleibt der Editor bei ihr (siehe [`Shared::save_as`]).
+    fn save_to(&self, path: &Path) -> Result<PathBuf, String> {
         self.flush_source();
         let text = {
             let state = self.state.borrow();
@@ -679,23 +703,70 @@ impl Shared {
             }
             state.text.clone()
         };
-        if let Some(dir) = self.manifest_path.parent()
+        if let Some(dir) = path.parent()
             && !dir.as_os_str().is_empty()
         {
             std::fs::create_dir_all(dir).map_err(|e| tr!("status.save_failed", error = e))?;
         }
-        std::fs::write(&self.manifest_path, &text)
-            .map_err(|e| tr!("status.save_failed", error = e))?;
-        self.state.borrow_mut().saved_text = Some(text);
-        self.update_title();
+        std::fs::write(path, &text).map_err(|e| tr!("status.save_failed", error = e))?;
+        if path == self.manifest_path {
+            self.state.borrow_mut().saved_text = Some(text);
+            self.update_title();
+        }
         self.set_status(
             StatusKind::Success,
-            &tr!("status.saved", path = self.manifest_path.display()),
+            &tr!("status.saved", path = path.display()),
         );
-        Ok(self.manifest_path.clone())
+        Ok(path.to_path_buf())
+    }
+
+    /// „Speichern unter“: schreibt `<ordner>/Cargo.toml` (Cargo liest nur
+    /// diesen Namen; ein anderer Dateiname zählt als Ordner) und öffnet sie
+    /// danach (eigenständiger Betrieb).
+    pub fn save_as(&self, chosen: &Path) -> Result<PathBuf, String> {
+        let dir = if chosen.is_dir() {
+            chosen.to_path_buf()
+        } else {
+            chosen
+                .parent()
+                .map_or_else(|| PathBuf::from("."), Path::to_path_buf)
+        };
+        let saved = self.save_to(&dir.join("Cargo.toml"))?;
+        if saved != self.manifest_path {
+            self.request(Request::Open(dir));
+        }
+        Ok(saved)
+    }
+
+    fn save_as_interactive(&self) {
+        let filters = [dialog::FileFilter::new(
+            &tr!("dialog.open_filter"),
+            &["Cargo.toml"],
+        )];
+        let Some(chosen) = dialog::save_file(
+            Some(self.window.widget()),
+            &tr!("dialog.save_as_title"),
+            "Cargo.toml",
+            &filters,
+        ) else {
+            return;
+        };
+        if let Err(message) = self.save_as(&chosen) {
+            self.set_status(StatusKind::Error, &message);
+            dialog::error(
+                Some(self.window.widget()),
+                &tr!("dialog.save_title"),
+                &message,
+            );
+        }
     }
 
     fn save_interactive(&self) {
+        // Eigenständig und noch nie gespeichert: wohin? (wie „Speichern unter“)
+        if self.standalone && self.state.borrow().saved_text.is_none() {
+            self.save_as_interactive();
+            return;
+        }
         if let Err(message) = self.save() {
             self.set_status(StatusKind::Error, &message);
             dialog::error(

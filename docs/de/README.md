@@ -45,8 +45,11 @@ automatisch geladen – auch wenn sie Syntaxfehler enthält (diese werden markie
 Exit-Code: `0` bei normalem Ende.
 
 **Eigenständig oder in Freya TDE:** Allein gestartet hat der Editor ein Menü
-**Datei** mit *Öffnen …* (Strg+O, eine andere `Cargo.toml`), *Sprache* (Oberfläche
-sofort umstellen; ungespeicherte Änderungen bleiben erhalten) und *Beenden* (Strg+Q).
+**Datei** mit *Öffnen …* (Strg+O, eine andere `Cargo.toml`), *Speichern* (Strg+S),
+*Speichern unter …* (Strg+Umschalt+S; gespeichert wird als `<ordner>/Cargo.toml`, danach
+geht es mit dieser Datei weiter), *Sprache* (Oberfläche sofort umstellen; ungespeicherte
+Änderungen bleiben erhalten) und *Beenden* (Strg+Q). Eine neue, noch nie gespeicherte
+Datei fragt beim Speichern wie *Speichern unter …* nach dem Ort.
 Die gewählte Sprache merkt er sich in `~/.config/ct-editor/settings.toml` (macOS
 `~/Library/Application Support/ct-editor/`, Windows `%APPDATA%\ct-editor\`); `--lang`
 geht vor. Freya TDE startet ihn mit `--embedded`: ohne Menü, Datei und Sprache
@@ -298,8 +301,14 @@ Er baut Linux (`.tar.gz`, GTK 4 vom System), Windows (`.zip` samt GTK-Laufzeit, 
 MSYS2) und macOS (`CT-Editor.app` als `.zip`, Homebrew, ad-hoc signiert) und hängt alles an
 ein GitHub-Release. Von Hand gestartet (Actions → Release → Run workflow) baut er nur; die
 Pakete liegen dann als Artefakte am Lauf. Die Skripte für die GTK-Laufzeit kommen aus RUF,
-vom Stand im `Cargo.lock`. Unter macOS meldet Gatekeeper das unsignierte Programm beim
-ersten Start (Rechtsklick → Öffnen).
+vom Stand im `Cargo.lock`.
+
+**Erster Start unter macOS:** Das Programm ist nicht von Apple notarisiert; seit macOS 15
+genügt Rechtsklick → Öffnen nicht mehr. Nach der Meldung „Fertig“ wählen, dann
+*Systemeinstellungen → Datenschutz & Sicherheit → „Dennoch öffnen“* (einmalig), oder im
+Terminal `xattr -dr com.apple.quarantine CT-Editor.app`. **Unter Windows** warnt
+SmartScreen: *Weitere Informationen → Trotzdem ausführen* (oder vor dem Entpacken in den
+Eigenschaften der ZIP „Zulassen“ ankreuzen).
 
 Symbole: Quelle `assets/ct-editor.svg`, daraus erzeugt `python3 assets/make-icons.py` die
 PNGs (Linux, einkompiliert), `ct-editor.ico` (in die Windows-`.exe` eingebettet über

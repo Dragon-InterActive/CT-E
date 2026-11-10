@@ -519,7 +519,22 @@ fn standalone_menu() {
     Application::process_events();
     assert_eq!(frame.editor().manifest_path(), other.join("Cargo.toml"));
     assert!(!frame.editor().is_dirty());
+
+    // Speichern unter: neue Datei in einem anderen Ordner, danach dort weiter.
+    let target = temp_dir("standalone-save-as");
+    frame.editor().set_source_text(edited);
+    frame.editor().save_as(&target.join("Cargo.toml")).unwrap();
+    wait_until("Editor auf der neuen Datei", || {
+        Application::process_events();
+        frame.editor().manifest_path() == target.join("Cargo.toml")
+    });
+    assert_eq!(
+        std::fs::read_to_string(target.join("Cargo.toml")).unwrap(),
+        edited
+    );
+    assert!(!frame.editor().is_dirty());
     i18n::set_language("de");
     let _ = std::fs::remove_dir_all(&dir);
     let _ = std::fs::remove_dir_all(&other);
+    let _ = std::fs::remove_dir_all(&target);
 }
