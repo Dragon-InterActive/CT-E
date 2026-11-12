@@ -575,7 +575,7 @@ dependencies = [
  "gobject-sys",
  "libc",
  "system-deps 9.0.0",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1150,7 +1150,7 @@ dependencies = [
 [[package]]
 name = "rncl"
 version = "0.2.0"
-source = "git+https://github.com/Dragon-InterActive/RUF#7dcaf2bd77d9c7c98957191094ea2d8c23e46381"
+source = "git+https://github.com/Dragon-InterActive/RUF#92dd8eb735c9b03428f9df06a05c97a4fca4c6c3"
 dependencies = [
  "ruf",
 ]
@@ -1158,7 +1158,7 @@ dependencies = [
 [[package]]
 name = "ruf"
 version = "0.2.0"
-source = "git+https://github.com/Dragon-InterActive/RUF#7dcaf2bd77d9c7c98957191094ea2d8c23e46381"
+source = "git+https://github.com/Dragon-InterActive/RUF#92dd8eb735c9b03428f9df06a05c97a4fca4c6c3"
 dependencies = [
  "gdk4-macos",
  "gdk4-win32",

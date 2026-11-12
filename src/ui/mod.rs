@@ -229,6 +229,12 @@ impl Editor {
     /// mit dem Ordnernamen als Paketname; gespeichert wird erst auf Wunsch.
     pub fn open(options: EditorOptions) -> Self {
         let manifest_path = options.project_dir.join("Cargo.toml");
+        // Öffnen und Speichern unter beginnen im Projektordner.
+        let start = options
+            .project_dir
+            .canonicalize()
+            .unwrap_or_else(|_| options.project_dir.clone());
+        ruf::dialog::set_default_folder(Some(&start));
 
         let window = RnclWindow::new("CT-Editor");
         window.set_size(options.size.0, options.size.1);

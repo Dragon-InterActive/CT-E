@@ -49,7 +49,7 @@ Exit code: `0` on normal termination.
 with *Open …* (Ctrl+O, another `Cargo.toml`), *Save* (Ctrl+S), *Save as …*
 (Ctrl+Shift+S; saved as `<folder>/Cargo.toml`, the editor then continues with that
 file), *Language* (switches the interface at once; unsaved changes are kept), *Appearance* (System, Light, Dark) and *Quit*
-(Ctrl+Q). A new, never saved file asks for the location on saving, like *Save as …*. It remembers the chosen language and appearance in
+(Ctrl+Q). A new, never saved file asks for the location on saving, like *Save as …*. The file dialogs start in the project folder. It remembers the chosen language and appearance in
 `~/.config/ct-editor/settings.toml` (macOS `~/Library/Application Support/ct-editor/`,
 Windows `%APPDATA%\ct-editor\`); `--lang` and `--theme` take precedence. Freya TDE starts it with
 `--embedded`: no menu, Freya TDE decides file, language and appearance (its settings).

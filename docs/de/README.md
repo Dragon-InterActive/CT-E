@@ -50,7 +50,7 @@ Exit-Code: `0` bei normalem Ende.
 *Speichern unter …* (Strg+Umschalt+S; gespeichert wird als `<ordner>/Cargo.toml`, danach
 geht es mit dieser Datei weiter), *Sprache* (Oberfläche sofort umstellen; ungespeicherte
 Änderungen bleiben erhalten), *Darstellung* (System, Hell, Dunkel) und *Beenden* (Strg+Q). Eine neue, noch nie gespeicherte
-Datei fragt beim Speichern wie *Speichern unter …* nach dem Ort.
+Datei fragt beim Speichern wie *Speichern unter …* nach dem Ort. Die Dateidialoge beginnen im Projektordner.
 Gewählte Sprache und Darstellung merkt er sich in `~/.config/ct-editor/settings.toml` (macOS
 `~/Library/Application Support/ct-editor/`, Windows `%APPDATA%\ct-editor\`); `--lang` und
 `--theme` gehen vor. Freya TDE startet ihn mit `--embedded`: ohne Menü, Datei, Sprache und
